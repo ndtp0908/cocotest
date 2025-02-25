@@ -18,9 +18,24 @@ namespace coco.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult About()
         {
-            return View();
+            return View("~/Views/About/About.cshtml");
+        }
+
+        public IActionResult Product()
+        {
+            return View("~/Views/Product/Product.cshtml");
+        }
+
+        public IActionResult Shopping()
+        {
+            return View("~/Views/Shopping/Shopping.cshtml");
+        }
+
+        public IActionResult User()
+        {
+            return View("~/Views/User/User.cshtml");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
