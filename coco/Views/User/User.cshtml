@@ -1,8 +1,68 @@
 ﻿@{
     ViewData["Title"] = "Thông tin cá nhân";
+    //<a asp-controller="Account" asp-action="Login">Login</a>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Thông tin cá nhân</h1>
-    <p>Learn about building Web apps with ASP.NET Core.</p>
+<div class="container mt-4">
+    <div class="row">
+        <!-- Sidebar bên trái -->
+        <div class="col-md-3">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="#" class="nav-link" onclick="showTab('personalInfo')">Thông tin cá nhân</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="nav-link" onclick="showTab('orderHistory')">Lịch sử mua hàng</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#" class="nav-link" onclick="showTab('changePassword')">Đổi mật khẩu</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div class="col-md-9">
+            <div id="personalInfo" class="tab-content">
+                <h2>Thông tin cá nhân</h2>
+                <p><strong>Họ tên:</strong> Nguyễn Văn A</p>
+                <p><strong>Số điện thoại:</strong> 0123 456 789</p>
+                <p><strong>Địa chỉ:</strong> 123 Đường ABC, TP. Hồ Chí Minh</p>
+            </div>
+
+            <div id="orderHistory" class="tab-content d-none">
+                <h2>Lịch sử mua hàng</h2>
+                <ul>
+                    <li>Đơn hàng #12345 - Ngày 20/02/2024 - 500.000đ</li>
+                    <li>Đơn hàng #67890 - Ngày 18/02/2024 - 300.000đ</li>
+                </ul>
+            </div>
+
+            <div id="changePassword" class="tab-content d-none">
+                <h2>Đổi mật khẩu</h2>
+                <form>
+                    <div class="mb-3">
+                        <label>Mật khẩu hiện tại:</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Mật khẩu mới:</label>
+                        <input type="password" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    function showTab(tabId) {
+        // Ẩn tất cả các tab
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.add('d-none');
+        });
+
+        // Hiển thị tab được chọn
+        document.getElementById(tabId).classList.remove('d-none');
+    }
+</script>
