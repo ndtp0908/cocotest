@@ -17,7 +17,7 @@
         <!-- Thông tin khách hàng -->
         <div class="col-md-6">
             <h4>Thông tin giao hàng</h4>
-            <form method="post" action="/Shopping/Shopping">
+            <form method="post" action="/Shopping/Shopping" id="checkout-form">
                 <div class="mb-3">
                     <label for="fullName" class="form-label">Họ và tên</label>
                     <input type="text" class="form-control" id="fullName" name="fullName" required>
@@ -44,20 +44,99 @@
         <!-- Danh sách sản phẩm trong giỏ hàng -->
         <div class="col-md-6">
             <h4>Đơn hàng của bạn</h4>
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between">
-                    <span>Sản phẩm 1</span>
-                    <span>500.000đ</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <span>Sản phẩm 2</span>
-                    <span>300.000đ</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between">
-                    <strong>Tổng tiền</strong>
-                    <strong>800.000đ</strong>
-                </li>
+            <ul class="list-group" id="cart-items">
+                <!-- Sản phẩm sẽ được hiển thị tại đây -->
             </ul>
+            <div class="list-group-item d-flex justify-content-between">
+                <strong>Tổng tiền</strong>
+                <strong id="total-price">0 đ</strong>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let cart = JSON.parse(localStorage.getItem("tempShopping")) || {};
+        let cartList = document.getElementById("cart-items");
+        let totalPrice = 0;
+
+        function updateCartUI() {
+            cartList.innerHTML = "";
+            totalPrice = 0;
+
+            for (let key in cart) {
+                let item = cart[key];
+                let itemTotal = item.itemPrice * item.itemAmount;
+                totalPrice += itemTotal;
+
+                let listItem = document.createElement("li");
+                listItem.className = "list-group-item d-flex justify-content-between align-items-center";
+                listItem.innerHTML = `
+                        <div>
+                            <strong>${item.itemName}</strong>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', -1)">-</button>
+                                <span id="amount-${key}" class="me-2">${item.itemAmount}</span>
+                                <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', 1)">+</button>
+                            </div>
+                        </div>
+                        <div>
+                            <span id="price-${key}">${itemTotal.toLocaleString()} đ</span>
+                            <button class="btn btn-danger btn-sm ms-2" onclick="removeItem('${key}')">X</button>
+                        </div>
+                    `;
+
+                cartList.appendChild(listItem);
+            }
+
+            document.getElementById("total-price").innerText = totalPrice.toLocaleString() + " đ";
+            localStorage.setItem("tempShopping", JSON.stringify(cart)); // Lưu lại giỏ hàng
+        }
+
+        updateCartUI(); // Cập nhật giao diện khi load trang
+
+        // Hàm thay đổi số lượng
+        window.changeAmount = function (itemId, change) {
+            if (cart[itemId]) {
+                cart[itemId].itemAmount += change;
+                if (cart[itemId].itemAmount < 1) cart[itemId].itemAmount = 1; // Không cho số lượng nhỏ hơn 1
+                updateCartUI();
+            }
+        };
+
+        // Hàm xóa sản phẩm khỏi giỏ hàng
+        window.removeItem = function (itemId) {
+            delete cart[itemId];
+            updateCartUI();
+        };
+
+        // Xử lý sự kiện thanh toán
+        document.getElementById("checkout-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            let orderData = {
+                fullName: document.getElementById("fullName").value,
+                phone: document.getElementById("phone").value,
+                address: document.getElementById("address").value,
+                paymentMethod: document.getElementById("paymentMethod").value,
+                cart: cart
+            };
+
+            fetch("/Shopping/Shopping", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Đặt hàng thành công!");
+                        localStorage.removeItem("tempShopping"); // Xóa giỏ hàng sau khi đặt hàng
+                        window.location.href = "/Home/Index";
+                    } else {
+                        alert("Có lỗi xảy ra, vui lòng thử lại!");
+                    }
+                });
+        });
+    });
+</script>

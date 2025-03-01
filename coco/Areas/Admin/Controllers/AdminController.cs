@@ -147,9 +147,11 @@ namespace coco.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var userInfo = await _context.UserInfos.FindAsync(id);
-            if (userInfo != null)
+            var account = await _context.Users.FindAsync(id);
+            if (userInfo != null && account != null)
             {
                 _context.UserInfos.Remove(userInfo);
+                _context.Users.Remove(account);
             }
 
             await _context.SaveChangesAsync();

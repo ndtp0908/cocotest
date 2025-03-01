@@ -28,16 +28,22 @@
                             <a class="nav-link text-dark" href="/About">Về chúng tôi</a>
                         </li>
                         <li class="nav-item">
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img style="width:50px;height:50px" src="/image/mainlogo.png" /></a>
+                            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                                <img style="width:50px;height:50px" src="/image/mainlogo.png" />
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/Shopping">Giỏ hàng</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/User">Thông tin cá nhân</a>
+                        <li class="nav-item dropdown" id="userMenu" style="display: none;">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" id="userDropdown" role="button"></a>
+                            <ul class="dropdown-menu" id="logoutMenu" style="display: none; position: absolute;">
+                                <li><a class="dropdown-item" href="/User" id="profileLink">Thông tin cá nhân</a></li>
+                                <li><a class="dropdown-item" href="#" id="logoutBtn">Đăng xuất</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Admin" asp-action="Index">Admin</a>
+                        <li class="nav-item" id="loginLink">
+                            <a asp-controller="Account" asp-action="Login" class="nav-link text-dark">Đăng nhập</a>
                         </li>
                     </ul>
                 </div>
@@ -56,9 +62,50 @@
             &copy; 2025 - CoCoPure - <a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const userData = localStorage.getItem("user");
+            const userMenu = document.getElementById("userMenu");
+            const loginLink = document.getElementById("loginLink");
+            const userDropdown = document.getElementById("userDropdown");
+            const logoutMenu = document.getElementById("logoutMenu");
+            const logoutBtn = document.getElementById("logoutBtn");
+
+            if (userData) {
+                const user = JSON.parse(userData);
+                userDropdown.textContent = `Xin chào, ${user.name}!`;
+
+                userMenu.style.display = "block";  // Hiển thị user menu
+                loginLink.style.display = "none";  // Ẩn nút "Đăng nhập"
+
+                userDropdown.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    logoutMenu.style.display = logoutMenu.style.display === "none" ? "block" : "none";
+                });
+
+                logoutBtn.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    localStorage.removeItem("user"); // Xóa user
+                    location.reload(); // Reload trang
+                });
+
+                document.addEventListener("click", function (event) {
+                    if (!userMenu.contains(event.target)) {
+                        logoutMenu.style.display = "none";
+                    }
+                });
+
+            } else {
+                userMenu.style.display = "none";  // Ẩn user menu
+                loginLink.style.display = "block"; // Hiện nút "Đăng nhập"
+            }
+        });
+    </script>
 </body>
 </html>

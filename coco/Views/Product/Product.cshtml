@@ -1,8 +1,89 @@
-﻿@{
+﻿@model IEnumerable<coco.Models.Storage>
+
+@{
     ViewData["Title"] = "Sản phẩm";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Sản phẩm</h1>
-    <p>Learn about building Web apps with ASP.NET Core.</p>
+    <h1 class="display-4">Danh sách sản phẩm</h1>
+
+    @if (Model == null || !Model.Any())
+    {
+        <p>⚠️ Hiện tại không có sản phẩm nào.</p>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ItemName</td>
+                        <td class="price">@item.ItemPrice</td>
+                        <td>@item.ItemAmount</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm add-to-cart"
+                                    data-id="@item.ItemId"
+                                    data-name="@item.ItemName"
+                                    data-price="@item.ItemPrice">
+                                Thêm vào giỏ hàng
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 </div>
+<script>
+    function formatCurrency(price) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Lặp qua tất cả các phần tử có class "price"
+        document.querySelectorAll(".price").forEach(function (element) {
+            let price = parseFloat(element.textContent); // Lấy giá trị số
+            element.textContent = formatCurrency(price); // Format lại
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Chọn tất cả nút "Thêm vào giỏ hàng"
+        document.querySelectorAll(".add-to-cart").forEach(button => {
+            button.addEventListener("click", function () {
+                let itemId = this.getAttribute("data-id");
+                let itemName = this.getAttribute("data-name");
+                let itemPrice = parseFloat(this.getAttribute("data-price"));
+
+                // Lấy giỏ hàng từ localStorage (nếu chưa có thì tạo mới)
+                let cart = JSON.parse(localStorage.getItem("tempShopping")) || {};
+
+                // Nếu sản phẩm đã tồn tại trong giỏ hàng thì tăng số lượng
+                if (cart[itemId]) {
+                    cart[itemId].itemAmount += 1;
+                } else {
+                    // Nếu chưa có thì thêm mới
+                    cart[itemId] = {
+                        itemId: itemId,
+                        itemName: itemName,
+                        itemPrice: itemPrice,
+                        itemAmount: 1
+                    };
+                }
+
+                // Lưu lại vào localStorage
+                localStorage.setItem("tempShopping", JSON.stringify(cart));
+            });
+        });
+    });
+</script>
+

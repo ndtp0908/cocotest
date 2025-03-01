@@ -1,11 +1,25 @@
 ﻿@{
-    ViewData["Title"] = "Thông tin cá nhân";
-    //<a asp-controller="Account" asp-action="Login">Login</a>
+    ViewData["Title"] = "Thông tin người dùng";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Thành công!</strong> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Lỗi!</strong> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
 <div class="container mt-4">
     <div class="row">
-        <!-- Sidebar bên trái -->
         <div class="col-md-3">
             <ul class="list-group">
                 <li class="list-group-item">
@@ -19,16 +33,54 @@
                 </li>
             </ul>
         </div>
-
-        <!-- Nội dung chính -->
         <div class="col-md-9">
             <div id="personalInfo" class="tab-content">
                 <h2>Thông tin cá nhân</h2>
-                <p><strong>Họ tên:</strong> Nguyễn Văn A</p>
-                <p><strong>Số điện thoại:</strong> 0123 456 789</p>
-                <p><strong>Địa chỉ:</strong> 123 Đường ABC, TP. Hồ Chí Minh</p>
-            </div>
+                <form id="profileForm" method="post" asp-controller="User" asp-action="Update">
+                    <input type="hidden" name="userId" id="userId">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>Họ tên:</label>
+                                <input type="text" class="form-control" id="name" name="name">
+                            </div>
+                            <div class="mb-3">
+                                <label>Tên tài khoản:</label>
+                                <input type="text" class="form-control" id="userName" name="userName" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label>Email:</label>
+                                <input type="email" class="form-control" name="email" id="email">
+                            </div>
+                            <div class="mb-3">
+                                <label>Ngày sinh:</label>
+                                <input type="date" class="form-control" name="birthday" id="birthday">
+                            </div>
+                        </div>
 
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>Giới tính:</label>
+                                <select class="form-control" id="gender" name="gender" required>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label>Số điện thoại:</label>
+                                <input type="text" class="form-control" name="phone" id="phone">
+                            </div>
+                            <div class="mb-3">
+                                <label>Địa chỉ:</label>
+                                <input type="text" class="form-control" name = "address" id="address">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary" onclick="updateProfile()">Cập nhật thông tin</button>
+                    </div>
+                </form>
+            </div>
             <div id="orderHistory" class="tab-content d-none">
                 <h2>Lịch sử mua hàng</h2>
                 <ul>
@@ -39,30 +91,91 @@
 
             <div id="changePassword" class="tab-content d-none">
                 <h2>Đổi mật khẩu</h2>
-                <form>
+                <form id="passwordForm" method="post" asp-controller="User" asp-action="ChangePassword">
+                    <input type="hidden" name="userId" id="userIdPass">
                     <div class="mb-3">
                         <label>Mật khẩu hiện tại:</label>
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" name="oldPassword">
                     </div>
                     <div class="mb-3">
                         <label>Mật khẩu mới:</label>
-                        <input type="password" class="form-control">
+                        <input type="password" class="form-control" name="newPassword">
+                    </div>
+                    <div class="mb-3">
+                        <label>Nhập lại mật khẩu mới:</label>
+                        <input type="password" class="form-control" name="rePassword">
                     </div>
                     <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
                 </form>
             </div>
         </div>
+
+  
+        </div>
     </div>
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const userData = localStorage.getItem("user");
+
+        if (!userData) {
+            window.location.href = "/Account/Login"; // Chuyển hướng về trang đăng nhập
+        }
+    });
+
     function showTab(tabId) {
-        // Ẩn tất cả các tab
         document.querySelectorAll('.tab-content').forEach(tab => {
             tab.classList.add('d-none');
         });
-
-        // Hiển thị tab được chọn
         document.getElementById(tabId).classList.remove('d-none');
     }
+
+
+    function loadUserData() {
+        const userData = localStorage.getItem("user");
+        if (userData) {
+            const user = JSON.parse(userData);
+            document.getElementById("userId").value = user.userId || "";
+            document.getElementById("userIdPass").value = user.userId || "";
+            document.getElementById("name").value = user.name || "";
+            document.getElementById("userName").value = user.userName || "";
+            document.getElementById("email").value = user.email || "";
+            document.getElementById("phone").value = user.phone || "";
+            document.getElementById("address").value = user.address || "";
+            document.getElementById("gender").value = user.gender || "Nam";
+
+            if (user.birthday) {
+                let dateParts = user.birthday.split("/");
+                if (dateParts.length === 3) {
+                    let formattedDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;
+                    document.getElementById("birthday").value = formattedDate;
+                }
+            }
+        }
+    }
+
+    function updateProfile() {
+        const userData = localStorage.getItem("user");
+        const user = JSON.parse(userData);
+
+        let birthdayValue = document.getElementById("birthday").value;
+        let dateParts = birthdayValue.split("-");
+        let formattedBirthday = `${dateParts[1]}/${dateParts[2]}/${dateParts[0]}`;
+
+        const updatedUser = {
+            userId: user.userId,
+            userName: user.userName,
+            name: document.getElementById("name").value,
+            phone: document.getElementById("phone").value,
+            email: document.getElementById("email").value,
+            address: document.getElementById("address").value,
+            birthday: formattedBirthday,
+            gender: document.getElementById("gender").value,
+            role: "User"
+        };
+
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+    }
+    window.onload = loadUserData;
 </script>

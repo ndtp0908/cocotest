@@ -43,6 +43,8 @@ namespace coco.Controllers
                 phone = userTempInfo.Phone,
                 email = userTempInfo.Email,
                 address = userTempInfo.Address,
+                birthday = userTempInfo.Birthday.ToString(),
+                gender = userTempInfo.Gender,
                 role = userTempInfo.Role,
             };
 
@@ -56,16 +58,66 @@ namespace coco.Controllers
         }
 
         [HttpPost]
-        public IActionResult SignUp(string fullName, string email, string password, string confirmPassword)
+        public async Task<IActionResult> SignUp(string fullName, string email, string phone, string address, DateOnly birthday,
+    string gender, string userName, string password, string confirmPassword)
         {
+            ViewBag.FullName = fullName;
+            ViewBag.Email = email;
+            ViewBag.Phone = phone;
+            ViewBag.Address = address;
+            ViewBag.Birthday = birthday.ToString("yyyy-MM-dd");
+            ViewBag.Gender = gender;
+            ViewBag.UserName = userName;
+
             if (password != confirmPassword)
             {
                 ViewBag.Error = "Mật khẩu không khớp!";
                 return View();
             }
 
+            bool isUserNameExists = await _context.Users.AnyAsync(u => u.UserName == userName);
+            bool isEmailExists = await _context.UserInfos.AnyAsync(u => u.Email == email);
+
+            if (isUserNameExists)
+            {
+                ViewBag.Error = "Tên tài khoản đã tồn tại!";
+                return View();
+            }
+
+            if (isEmailExists)
+            {
+                ViewBag.Error = "Email đã được sử dụng!";
+                return View();
+            }
+
+            var userId = Guid.NewGuid().ToString();
+
+            var account = new User
+            {
+                UserId = userId,
+                UserName = userName,
+                PassWord = password,
+            };
+
+            var userInfo = new UserInfo
+            {
+                UserId = userId,
+                Name = fullName,
+                Phone = phone,
+                Email = email,
+                Address = address,
+                Gender = gender,
+                Birthday = birthday,
+                Role = "User"
+            };
+
+            _context.Users.Add(account);
+            _context.UserInfos.Add(userInfo);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction("Login");
         }
+
     }
 }
 
