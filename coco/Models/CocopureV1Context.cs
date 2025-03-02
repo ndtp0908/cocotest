@@ -17,6 +17,8 @@ public partial class CocopureV1Context : DbContext
 
     public virtual DbSet<Bill> Bills { get; set; }
 
+    public virtual DbSet<BillDetail> BillDetails { get; set; }
+
     public virtual DbSet<NonCustomer> NonCustomers { get; set; }
 
     public virtual DbSet<Storage> Storages { get; set; }
@@ -35,29 +37,20 @@ public partial class CocopureV1Context : DbContext
     {
         modelBuilder.Entity<Bill>(entity =>
         {
-            entity.HasKey(e => e.BillId).HasName("PK__bill__6D903F03C2E99396");
+            entity.HasKey(e => e.BillId).HasName("PK__bill__6D903F03DD1BF7FA");
 
             entity.ToTable("bill");
 
             entity.Property(e => e.BillId)
                 .HasMaxLength(255)
                 .HasColumnName("billId");
+            entity.Property(e => e.DayBought).HasColumnName("dayBought");
             entity.Property(e => e.Discount)
                 .HasMaxLength(50)
                 .HasColumnName("discount");
             entity.Property(e => e.EndAddress)
                 .HasMaxLength(255)
                 .HasColumnName("endAddress");
-            entity.Property(e => e.ItemCount).HasColumnName("itemCount");
-            entity.Property(e => e.ItemId)
-                .HasMaxLength(255)
-                .HasColumnName("itemId");
-            entity.Property(e => e.ItemName)
-                .HasMaxLength(255)
-                .HasColumnName("itemName");
-            entity.Property(e => e.ItemPrice)
-                .HasColumnType("decimal(18, 2)")
-                .HasColumnName("itemPrice");
             entity.Property(e => e.PaymentMethod)
                 .HasMaxLength(100)
                 .HasColumnName("paymentMethod");
@@ -71,23 +64,46 @@ public partial class CocopureV1Context : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("userId");
 
-            entity.HasOne(d => d.Item).WithMany(p => p.Bills)
-                .HasForeignKey(d => d.ItemId)
-                .HasConstraintName("FK__bill__itemId__571DF1D5");
-
             entity.HasOne(d => d.User).WithMany(p => p.Bills)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__bill__userId__5629CD9C");
+                .HasConstraintName("FK__bill__userId__14270015");
+        });
+
+        modelBuilder.Entity<BillDetail>(entity =>
+        {
+            entity.HasKey(e => e.DetailId).HasName("PK__bill_det__83077859CE786369");
+
+            entity.ToTable("bill_details");
+
+            entity.Property(e => e.DetailId).HasColumnName("detailId");
+            entity.Property(e => e.BillId)
+                .HasMaxLength(255)
+                .HasColumnName("billId");
+            entity.Property(e => e.ItemCount).HasColumnName("itemCount");
+            entity.Property(e => e.ItemId)
+                .HasMaxLength(255)
+                .HasColumnName("itemId");
+            entity.Property(e => e.Price)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("price");
+
+            entity.HasOne(d => d.Bill).WithMany(p => p.BillDetails)
+                .HasForeignKey(d => d.BillId)
+                .HasConstraintName("FK__bill_deta__billI__17036CC0");
+
+            entity.HasOne(d => d.Item).WithMany(p => p.BillDetails)
+                .HasForeignKey(d => d.ItemId)
+                .HasConstraintName("FK__bill_deta__itemI__17F790F9");
         });
 
         modelBuilder.Entity<NonCustomer>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__non_cust__CB9A1CFF59A01DD3");
+            entity.HasKey(e => e.UserId).HasName("PK__non_cust__CB9A1CFF4E15B7F7");
 
             entity.ToTable("non_customer");
 
-            entity.HasIndex(e => e.Email, "UQ__non_cust__AB6E6164A8F5F5F7").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__non_cust__AB6E616420ABC7E2").IsUnique();
 
             entity.Property(e => e.UserId)
                 .HasMaxLength(255)
@@ -95,6 +111,7 @@ public partial class CocopureV1Context : DbContext
             entity.Property(e => e.Address)
                 .HasMaxLength(255)
                 .HasColumnName("address");
+            entity.Property(e => e.DaySend).HasColumnName("daySend");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .HasColumnName("email");

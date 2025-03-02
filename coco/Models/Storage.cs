@@ -13,5 +13,5 @@ public partial class Storage
 
     public int ItemAmount { get; set; }
 
-    public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
+    public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
 }

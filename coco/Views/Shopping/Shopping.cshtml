@@ -14,7 +14,6 @@
     }
 
     <div class="row">
-        <!-- Thông tin khách hàng -->
         <div class="col-md-6">
             <h4>Thông tin giao hàng</h4>
             <form method="post" action="/Shopping/Shopping" id="checkout-form">
@@ -41,11 +40,9 @@
             </form>
         </div>
 
-        <!-- Danh sách sản phẩm trong giỏ hàng -->
         <div class="col-md-6">
             <h4>Đơn hàng của bạn</h4>
             <ul class="list-group" id="cart-items">
-                <!-- Sản phẩm sẽ được hiển thị tại đây -->
             </ul>
             <div class="list-group-item d-flex justify-content-between">
                 <strong>Tổng tiền</strong>
@@ -61,6 +58,13 @@
         let cartList = document.getElementById("cart-items");
         let totalPrice = 0;
 
+        let user = JSON.parse(localStorage.getItem("user"));
+        if (user) {
+            document.getElementById("fullName").value = user.name || "";
+            document.getElementById("phone").value = user.phone || "";
+            document.getElementById("address").value = user.address || "";
+        }
+
         function updateCartUI() {
             cartList.innerHTML = "";
             totalPrice = 0;
@@ -73,70 +77,88 @@
                 let listItem = document.createElement("li");
                 listItem.className = "list-group-item d-flex justify-content-between align-items-center";
                 listItem.innerHTML = `
-                        <div>
-                            <strong>${item.itemName}</strong>
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', -1)">-</button>
-                                <span id="amount-${key}" class="me-2">${item.itemAmount}</span>
-                                <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', 1)">+</button>
+                            <div>
+                                <strong>${item.itemName}</strong>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', -1)">-</button>
+                                    <span id="amount-${key}" class="me-2">${item.itemAmount}</span>
+                                    <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', 1)">+</button>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <span id="price-${key}">${itemTotal.toLocaleString()} đ</span>
-                            <button class="btn btn-danger btn-sm ms-2" onclick="removeItem('${key}')">X</button>
-                        </div>
-                    `;
+                            <div>
+                                <span id="price-${key}">${itemTotal.toLocaleString()} đ</span>
+                                <button class="btn btn-danger btn-sm ms-2" onclick="removeItem('${key}')">X</button>
+                            </div>
+                        `;
 
                 cartList.appendChild(listItem);
             }
 
             document.getElementById("total-price").innerText = totalPrice.toLocaleString() + " đ";
-            localStorage.setItem("tempShopping", JSON.stringify(cart)); // Lưu lại giỏ hàng
+            localStorage.setItem("tempShopping", JSON.stringify(cart));
         }
 
-        updateCartUI(); // Cập nhật giao diện khi load trang
+        updateCartUI();
 
-        // Hàm thay đổi số lượng
         window.changeAmount = function (itemId, change) {
             if (cart[itemId]) {
                 cart[itemId].itemAmount += change;
-                if (cart[itemId].itemAmount < 1) cart[itemId].itemAmount = 1; // Không cho số lượng nhỏ hơn 1
+                if (cart[itemId].itemAmount < 1) cart[itemId].itemAmount = 1;
                 updateCartUI();
             }
         };
 
-        // Hàm xóa sản phẩm khỏi giỏ hàng
         window.removeItem = function (itemId) {
             delete cart[itemId];
             updateCartUI();
         };
 
-        // Xử lý sự kiện thanh toán
         document.getElementById("checkout-form").addEventListener("submit", function (event) {
             event.preventDefault();
+
+            let cart = JSON.parse(localStorage.getItem("tempShopping")) || {};
+            let user = JSON.parse(localStorage.getItem("user")) || {};
+
+            let cartItems = Object.keys(cart).map(key => ({
+                itemId: cart[key].itemId,
+                itemAmount: cart[key].itemAmount,
+                itemPrice: cart[key].itemPrice
+            }));
+
+            let totalAmount = cartItems.reduce((acc, item) => acc + (item.itemAmount * item.itemPrice), 0);
+
             let orderData = {
+                userId: user.userId || null,
                 fullName: document.getElementById("fullName").value,
                 phone: document.getElementById("phone").value,
                 address: document.getElementById("address").value,
                 paymentMethod: document.getElementById("paymentMethod").value,
-                cart: cart
+                discount: 0,
+                total: totalAmount,
+                cart: cartItems
             };
+
+            console.log("🔴 Debug Order Data:", orderData); 
 
             fetch("/Shopping/Shopping", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify(orderData)
             })
                 .then(response => response.json())
                 .then(data => {
+                    console.log("🔴 Debug Server Response:", data);
                     if (data.success) {
                         alert("Đặt hàng thành công!");
-                        localStorage.removeItem("tempShopping"); // Xóa giỏ hàng sau khi đặt hàng
+                        localStorage.removeItem("tempShopping");
                         window.location.href = "/Home/Index";
                     } else {
                         alert("Có lỗi xảy ra, vui lòng thử lại!");
                     }
-                });
+                })
+                .catch(error => console.error("🔴 Fetch Error:", error));
         });
     });
 </script>

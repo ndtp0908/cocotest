@@ -9,14 +9,6 @@ public partial class Bill
 
     public string? UserId { get; set; }
 
-    public string ItemId { get; set; } = null!;
-
-    public string ItemName { get; set; } = null!;
-
-    public decimal ItemPrice { get; set; }
-
-    public int ItemCount { get; set; }
-
     public string? Discount { get; set; }
 
     public decimal? Total { get; set; }
@@ -27,7 +19,9 @@ public partial class Bill
 
     public string? Status { get; set; }
 
-    public virtual Storage Item { get; set; } = null!;
+    public DateOnly DayBought { get; set; }
+
+    public virtual ICollection<BillDetail> BillDetails { get; set; } = new List<BillDetail>();
 
     public virtual User? User { get; set; }
 }

@@ -16,4 +16,6 @@ public partial class NonCustomer
     public string? Address { get; set; }
 
     public string? Note { get; set; }
+
+    public DateOnly DaySend { get; set; }
 }
