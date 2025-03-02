@@ -37,7 +37,7 @@ public partial class CocopureV1Context : DbContext
     {
         modelBuilder.Entity<Bill>(entity =>
         {
-            entity.HasKey(e => e.BillId).HasName("PK__bill__6D903F03DD1BF7FA");
+            entity.HasKey(e => e.BillId).HasName("PK__bill__6D903F03CD0CA1CB");
 
             entity.ToTable("bill");
 
@@ -51,9 +51,15 @@ public partial class CocopureV1Context : DbContext
             entity.Property(e => e.EndAddress)
                 .HasMaxLength(255)
                 .HasColumnName("endAddress");
+            entity.Property(e => e.FullName)
+                .HasMaxLength(255)
+                .HasColumnName("fullName");
             entity.Property(e => e.PaymentMethod)
                 .HasMaxLength(100)
                 .HasColumnName("paymentMethod");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(20)
+                .HasColumnName("phone");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
@@ -67,12 +73,12 @@ public partial class CocopureV1Context : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Bills)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__bill__userId__14270015");
+                .HasConstraintName("FK__bill__userId__2180FB33");
         });
 
         modelBuilder.Entity<BillDetail>(entity =>
         {
-            entity.HasKey(e => e.DetailId).HasName("PK__bill_det__83077859CE786369");
+            entity.HasKey(e => e.DetailId).HasName("PK__bill_det__83077859C63772D9");
 
             entity.ToTable("bill_details");
 
@@ -90,11 +96,11 @@ public partial class CocopureV1Context : DbContext
 
             entity.HasOne(d => d.Bill).WithMany(p => p.BillDetails)
                 .HasForeignKey(d => d.BillId)
-                .HasConstraintName("FK__bill_deta__billI__17036CC0");
+                .HasConstraintName("FK__bill_deta__billI__245D67DE");
 
             entity.HasOne(d => d.Item).WithMany(p => p.BillDetails)
                 .HasForeignKey(d => d.ItemId)
-                .HasConstraintName("FK__bill_deta__itemI__17F790F9");
+                .HasConstraintName("FK__bill_deta__itemI__25518C17");
         });
 
         modelBuilder.Entity<NonCustomer>(entity =>

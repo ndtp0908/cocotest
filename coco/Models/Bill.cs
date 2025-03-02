@@ -9,6 +9,10 @@ public partial class Bill
 
     public string? UserId { get; set; }
 
+    public string FullName { get; set; } = null!;
+
+    public string Phone { get; set; } = null!;
+
     public string? Discount { get; set; }
 
     public decimal? Total { get; set; }

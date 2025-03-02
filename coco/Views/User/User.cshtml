@@ -82,12 +82,23 @@
                 </form>
             </div>
             <div id="orderHistory" class="tab-content d-none">
-                <h2>Lịch sử mua hàng</h2>
-                <ul>
-                    <li>Đơn hàng #12345 - Ngày 20/02/2024 - 500.000đ</li>
-                    <li>Đơn hàng #67890 - Ngày 18/02/2024 - 300.000đ</li>
-                </ul>
+                <h3>Lịch sử đơn hàng</h3>
+                <table id="orderHistoryTable" border="1" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Sản phẩm</th>
+                            <th>Ngày mua</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dữ liệu sẽ được thêm vào đây bằng JavaScript -->
+                    </tbody>
+                </table>
             </div>
+
 
             <div id="changePassword" class="tab-content d-none">
                 <h2>Đổi mật khẩu</h2>
@@ -129,6 +140,10 @@
             tab.classList.add('d-none');
         });
         document.getElementById(tabId).classList.remove('d-none');
+
+        if (tabId === "orderHistory") {
+            loadOrderHistory();
+        }
     }
 
 
@@ -154,6 +169,40 @@
             }
         }
     }
+
+    function loadOrderHistory() {
+        const userData = localStorage.getItem("user");
+        if (!userData) return;
+
+        const user = JSON.parse(userData);
+        const userId = user.userId;
+
+        fetch(`/User/History?userId=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Dữ liệu từ API:", data);
+
+                const tableBody = document.querySelector("#orderHistoryTable tbody");
+                tableBody.innerHTML = "";
+
+                data.forEach((order, index) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${order.items || "Không có sản phẩm"}</td>
+                        <td>${order.dayBought || "Không có dữ liệu"}</td>
+                        <td>${order.total ? order.total.toLocaleString() + " VNĐ" : "Không có dữ liệu"}</td>
+                        <td>${order.status || "Chưa cập nhật"}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error("Lỗi khi gọi API:", error));
+    }
+
+
+
+
 
     function updateProfile() {
         const userData = localStorage.getItem("user");

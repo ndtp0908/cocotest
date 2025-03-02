@@ -14,6 +14,71 @@ namespace coco.Controllers
             _context = context;
         }
 
+        /*public async Task<IActionResult> History(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("UserId không hợp lệ.");
+            }
+
+            var orders = await _context.Bills
+                .Where(b => b.UserId == userId)
+                .OrderByDescending(b => b.DayBought)
+                .Select(b => new
+                {
+                    b.BillId,
+                    b.DayBought,
+                    b.Total,
+                    b.Status,
+                    BillDetails = b.BillDetails.Select(d => new
+                    {
+                        d.ItemCount,
+                        Item = new {d.Item.ItemName}
+                    })
+                })
+                .ToListAsync();
+
+            return Json(orders);
+        }*/
+
+        public async Task<IActionResult> History(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("UserId không hợp lệ.");
+            }
+
+            var orders = await _context.Bills
+                .Where(b => b.UserId == userId)
+                .OrderByDescending(b => b.DayBought)
+                .Select(b => new
+                {
+                    b.BillId,
+                    b.DayBought,
+                    b.Total,
+                    Items = b.BillDetails.Select(d => $"{d.Item.ItemName} x {d.ItemCount}").ToList(),
+                    Status = "Đã Thanh Toán"
+                })
+                .ToListAsync();
+
+            var formattedOrders = orders
+                .Select((order, index) => new
+                {
+                    Id = index + 1,
+                    BillId = order.BillId,
+                    Items = string.Join(", ", order.Items),
+                    Total = order.Total,
+                    DayBought = order.DayBought,
+                    Status = order.Status
+                })
+                .ToList();
+
+            return Json(formattedOrders);
+        }
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> Update(string userId, string name, string userName, string email, DateOnly birthday,
             string gender, string address, string phone)

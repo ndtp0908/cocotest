@@ -33,7 +33,7 @@ namespace YourNamespace.Controllers
             try
             {
                 string billId = Guid.NewGuid().ToString();
-                string userId = order.UserId ?? "G+" + Guid.NewGuid().ToString();
+                string userId = order.UserId ?? "833816f9-77b1-402f-9cfe-ec3c0f549a70";
 
                 decimal total = order.Cart.Sum(i => i.ItemAmount * i.ItemPrice);
                 decimal discount = 0m;
@@ -43,6 +43,8 @@ namespace YourNamespace.Controllers
                 {
                     BillId = billId,
                     UserId = userId,
+                    FullName = order.FullName,
+                    Phone = order.Phone,
                     Discount = discount.ToString(),
                     EndAddress = order.Address,
                     PaymentMethod = order.PaymentMethod,

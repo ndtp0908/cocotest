@@ -43,35 +43,44 @@
         </table>
     }
 </div>
+
+<!-- Bootstrap Toast Notification -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                🛒 Sản phẩm đã được thêm vào giỏ hàng!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <script>
-    function formatCurrency(price) {
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
-    }
-
     document.addEventListener("DOMContentLoaded", function () {
-        // Lặp qua tất cả các phần tử có class "price"
+        // Định dạng tiền tệ VND
+        function formatCurrency(price) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+        }
+
+        // Cập nhật giá sản phẩm theo định dạng tiền tệ
         document.querySelectorAll(".price").forEach(function (element) {
-            let price = parseFloat(element.textContent); // Lấy giá trị số
-            element.textContent = formatCurrency(price); // Format lại
+            let price = parseFloat(element.textContent);
+            element.textContent = formatCurrency(price);
         });
-    });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        // Chọn tất cả nút "Thêm vào giỏ hàng"
+        // Xử lý sự kiện "Thêm vào giỏ hàng"
         document.querySelectorAll(".add-to-cart").forEach(button => {
             button.addEventListener("click", function () {
                 let itemId = this.getAttribute("data-id");
                 let itemName = this.getAttribute("data-name");
                 let itemPrice = parseFloat(this.getAttribute("data-price"));
 
-                // Lấy giỏ hàng từ localStorage (nếu chưa có thì tạo mới)
                 let cart = JSON.parse(localStorage.getItem("tempShopping")) || {};
 
-                // Nếu sản phẩm đã tồn tại trong giỏ hàng thì tăng số lượng
                 if (cart[itemId]) {
                     cart[itemId].itemAmount += 1;
                 } else {
-                    // Nếu chưa có thì thêm mới
                     cart[itemId] = {
                         itemId: itemId,
                         itemName: itemName,
@@ -80,10 +89,13 @@
                     };
                 }
 
-                // Lưu lại vào localStorage
                 localStorage.setItem("tempShopping", JSON.stringify(cart));
+
+                // Hiển thị toast Bootstrap
+                let cartToast = new bootstrap.Toast(document.getElementById("cartToast"));
+                document.querySelector("#cartToast .toast-body").textContent = `✅ ${itemName} đã được thêm vào giỏ hàng!`;
+                cartToast.show();
             });
         });
     });
 </script>
-

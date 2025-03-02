@@ -1,10 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Giỏ hàng";
 }
-
 <div class="container mt-4">
     <h2 class="text-center">Thanh toán</h2>
 
+    <div id="error-message" class="alert alert-danger d-none"></div> <!-- Thông báo lỗi -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success" role="alert">
@@ -30,6 +30,10 @@
                     <textarea class="form-control" id="address" name="address" required></textarea>
                 </div>
                 <div class="mb-3">
+                    <label for="voucher" class="form-label">Mã giảm giá</label>
+                    <input type="text" class="form-control" id="voucher">
+                </div>
+                <div class="mb-3">
                     <label for="paymentMethod" class="form-label">Phương thức thanh toán</label>
                     <select class="form-control" id="paymentMethod" name="paymentMethod" required>
                         <option value="cod">Thanh toán khi nhận hàng (COD)</option>
@@ -42,8 +46,7 @@
 
         <div class="col-md-6">
             <h4>Đơn hàng của bạn</h4>
-            <ul class="list-group" id="cart-items">
-            </ul>
+            <ul class="list-group" id="cart-items"></ul>
             <div class="list-group-item d-flex justify-content-between">
                 <strong>Tổng tiền</strong>
                 <strong id="total-price">0 đ</strong>
@@ -77,19 +80,19 @@
                 let listItem = document.createElement("li");
                 listItem.className = "list-group-item d-flex justify-content-between align-items-center";
                 listItem.innerHTML = `
-                            <div>
-                                <strong>${item.itemName}</strong>
-                                <div class="d-flex align-items-center">
-                                    <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', -1)">-</button>
-                                    <span id="amount-${key}" class="me-2">${item.itemAmount}</span>
-                                    <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', 1)">+</button>
-                                </div>
+                        <div>
+                            <strong>${item.itemName}</strong>
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', -1)">-</button>
+                                <span id="amount-${key}" class="me-2">${item.itemAmount}</span>
+                                <button class="btn btn-secondary btn-sm me-2" onclick="changeAmount('${key}', 1)">+</button>
                             </div>
-                            <div>
-                                <span id="price-${key}">${itemTotal.toLocaleString()} đ</span>
-                                <button class="btn btn-danger btn-sm ms-2" onclick="removeItem('${key}')">X</button>
-                            </div>
-                        `;
+                        </div>
+                        <div>
+                            <span id="price-${key}">${itemTotal.toLocaleString()} đ</span>
+                            <button class="btn btn-danger btn-sm ms-2" onclick="removeItem('${key}')">X</button>
+                        </div>
+                    `;
 
                 cartList.appendChild(listItem);
             }
@@ -138,8 +141,6 @@
                 cart: cartItems
             };
 
-            console.log("🔴 Debug Order Data:", orderData); 
-
             fetch("/Shopping/Shopping", {
                 method: "POST",
                 headers: {
@@ -149,16 +150,21 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("🔴 Debug Server Response:", data);
                     if (data.success) {
-                        alert("Đặt hàng thành công!");
                         localStorage.removeItem("tempShopping");
-                        window.location.href = "/Home/Index";
+                        window.location.href = "/Shopping/Success"; // Điều hướng đến trang success.cshtml
                     } else {
-                        alert("Có lỗi xảy ra, vui lòng thử lại!");
+                        let errorMessage = document.getElementById("error-message");
+                        errorMessage.textContent = data.message;
+                        errorMessage.classList.remove("d-none"); // Hiển thị lỗi
                     }
                 })
-                .catch(error => console.error("🔴 Fetch Error:", error));
+                .catch(error => {
+                    console.error("🔴 Fetch Error:", error);
+                    let errorMessage = document.getElementById("error-message");
+                    errorMessage.textContent = "Có lỗi xảy ra khi gửi yêu cầu. Vui lòng thử lại!";
+                    errorMessage.classList.remove("d-none");
+                });
         });
     });
 </script>

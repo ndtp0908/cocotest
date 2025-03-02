@@ -19,7 +19,7 @@ namespace coco.Controllers
         public async Task<IActionResult> Index()
         {
             var products = await _context.Storages.ToListAsync();
-            return View("Product", products); // Chỉ định tên file View
+            return View("Product", products);
         }
     }
 }
