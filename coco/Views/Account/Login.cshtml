@@ -23,7 +23,7 @@
 
 <script>
 document.getElementById("loginForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Ngăn chặn submit form mặc định
+    event.preventDefault();
 
     let userName = document.getElementById("userName").value;
     let password = document.getElementById("password").value;
@@ -36,7 +36,6 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            //sessionStorage.setItem("user", JSON.stringify(data.user));
             localStorage.setItem("user", JSON.stringify(data.user));
             window.location.href = "/";
         } else {

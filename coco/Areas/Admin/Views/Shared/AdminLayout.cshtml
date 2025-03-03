@@ -3,47 +3,132 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - coco</title>
+    <title>@ViewData["Title"] - CoCoPure</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/coco.styles.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3 fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">coco</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse d-sm-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1 justify-content-around">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="navbar-brand" asp-area="Admin" asp-controller="Home" asp-action="Index">
+                                <img style="width:50px;height:50px" src="/image/mainlogo.png" />
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown" id="userMenu" style="display: none;">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" id="userDropdown" role="button"></a>
+                            <ul class="dropdown-menu" id="logoutMenu" style="display: none; position: absolute;">
+                                <li><a class="dropdown-item" href="/Home" id="logoutBtn">Đăng xuất</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" id="loginLink">
+                            <a asp-controller="Account" asp-action="Login" class="nav-link text-dark">Đăng nhập</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="main-body pt-5">
+        <main class="pt-3" role="main">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - coco - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container d-flex justify-content-center">
+            &copy; 2025 - CoCoPure - <a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
         </div>
     </footer>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pt-5 {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+    </style>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const userData = localStorage.getItem("user");
+            const userMenu = document.getElementById("userMenu");
+            const loginLink = document.getElementById("loginLink");
+            const userDropdown = document.getElementById("userDropdown");
+            const logoutMenu = document.getElementById("logoutMenu");
+            const logoutBtn = document.getElementById("logoutBtn");
+
+            if (!userData) {
+                window.location.href = "/Account/Login";
+            }
+            if (userData) {
+                const user = JSON.parse(userData);
+                if (user.role !== "Admin") {
+                    let currentPath = window.location.pathname.toLowerCase();
+                    if (currentPath.startsWith("/admin")) {
+                        window.location.href = "/Home";
+                        return;
+                    }
+                }
+
+                userDropdown.textContent = `Xin chào, ${user.name}!`;
+
+                userMenu.style.display = "block";
+                loginLink.style.display = "none";
+
+                userDropdown.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    logoutMenu.style.display = logoutMenu.style.display === "none" ? "block" : "none";
+                });
+
+                logoutBtn.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    localStorage.removeItem("user");
+                    location.reload();
+                });
+
+                document.addEventListener("click", function (event) {
+                    if (!userMenu.contains(event.target)) {
+                        logoutMenu.style.display = "none";
+                    }
+                });
+
+            } else {
+                userMenu.style.display = "none";
+                loginLink.style.display = "block";
+            }
+        });
+    </script>
 </body>
 </html>

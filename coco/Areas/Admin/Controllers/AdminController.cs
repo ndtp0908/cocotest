@@ -19,6 +19,52 @@ namespace coco.Areas.Admin.Controllers
             _context = context;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(string userId, string oldPassword, string newPassword, string rePassword)
+        {
+            if (newPassword != rePassword)
+            {
+                TempData["ErrorMessage"] = "Mật khẩu nhập lại không khớp!";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var account = await _context.Users.FindAsync(userId);
+            if (account == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy tài khoản!";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (account.PassWord != oldPassword)
+            {
+                TempData["ErrorMessage"] = "Mật khẩu cũ không đúng!";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    account.PassWord = newPassword;
+                    _context.Update(account);
+                    await _context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    Console.WriteLine("Lỗi cập nhật dữ liệu: " + ex.Message);
+                    TempData["ErrorMessage"] = "Lỗi khi đổi mật khẩu!";
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ!";
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
         // GET: Admin/Admin
         public async Task<IActionResult> Index()
         {

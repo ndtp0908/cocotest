@@ -131,7 +131,7 @@
         const userData = localStorage.getItem("user");
 
         if (!userData) {
-            window.location.href = "/Account/Login"; // Chuyển hướng về trang đăng nhập
+            window.location.href = "/Account/Login";
         }
     });
 
@@ -199,10 +199,6 @@
             })
             .catch(error => console.error("Lỗi khi gọi API:", error));
     }
-
-
-
-
 
     function updateProfile() {
         const userData = localStorage.getItem("user");
