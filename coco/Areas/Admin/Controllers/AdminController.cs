@@ -65,148 +65,160 @@ namespace coco.Areas.Admin.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // GET: Admin/Admin
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> GetProducts()
         {
-            var cocopureV1Context = _context.UserInfos.Include(u => u.User);
-            return View(await cocopureV1Context.ToListAsync());
-        }
-
-        // GET: Admin/Admin/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var userInfo = await _context.UserInfos
-                .Include(u => u.User)
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (userInfo == null)
-            {
-                return NotFound();
-            }
-
-            return View(userInfo);
-        }
-
-        // GET: Admin/Admin/Create
-        public IActionResult Create()
-        {
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId");
-            return View();
-        }
-
-        // POST: Admin/Admin/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserId,Name,Phone,Email,Address,Gender,Birthday,Role")] UserInfo userInfo)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(userInfo);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", userInfo.UserId);
-            return View(userInfo);
-        }
-
-        // GET: Admin/Admin/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var userInfo = await _context.UserInfos.FindAsync(id);
-            if (userInfo == null)
-            {
-                return NotFound();
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", userInfo.UserId);
-            return View(userInfo);
-        }
-
-        // POST: Admin/Admin/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("UserId,Name,Phone,Email,Address,Gender,Birthday,Role")] UserInfo userInfo)
-        {
-            if (id != userInfo.UserId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+            var products = await _context.Storages
+                .Select(p => new
                 {
-                    _context.Update(userInfo);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+                    p.ItemId,
+                    p.ItemName,
+                    p.ItemPrice,
+                    p.ItemAmount
+                })
+                .ToListAsync();
+
+            return Json(products);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _context.UserInfos
+                .Select(u => new
                 {
-                    if (!UserInfoExists(userInfo.UserId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["UserId"] = new SelectList(_context.Users, "UserId", "UserId", userInfo.UserId);
-            return View(userInfo);
+                    u.UserId,
+                    u.Name,
+                    u.Phone,
+                    u.Gender,
+                    u.Birthday,
+                    u.Address,
+                    u.Email,
+                    u.Role,
+                    u.User.UserName
+                })
+                .ToListAsync();
+
+            return Json(users);
         }
 
-        // GET: Admin/Admin/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        [HttpPost]
+        public async Task<IActionResult> AddProduct([FromBody] Storage newProduct)
         {
-            if (id == null)
+            if (newProduct == null || string.IsNullOrWhiteSpace(newProduct.ItemName))
             {
-                return NotFound();
+                return BadRequest(new { message = "Dữ liệu không hợp lệ!" });
             }
 
-            var userInfo = await _context.UserInfos
-                .Include(u => u.User)
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (userInfo == null)
-            {
-                return NotFound();
-            }
-
-            return View(userInfo);
-        }
-
-        // POST: Admin/Admin/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var userInfo = await _context.UserInfos.FindAsync(id);
-            var account = await _context.Users.FindAsync(id);
-            if (userInfo != null && account != null)
-            {
-                _context.UserInfos.Remove(userInfo);
-                _context.Users.Remove(account);
-            }
-
+            newProduct.ItemId = Guid.NewGuid().ToString();
+            _context.Storages.Add(newProduct);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Ok(new { message = "Thêm sản phẩm thành công!" });
         }
 
-        private bool UserInfoExists(string id)
+        [HttpPost]
+        public async Task<IActionResult> AddUser([FromBody] UserInfoAdmin newUser)
         {
-            return _context.UserInfos.Any(e => e.UserId == id);
+            if (newUser == null)
+            {
+                return BadRequest(new { message = "Dữ liệu không hợp lệ!" });
+            }
+            var oldUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == newUser.UserName);
+            if (oldUser != null)
+            {
+                return BadRequest(new { message = "Tên đăng nhập đã tồn tại!" });
+            };
+            newUser.UserId = Guid.NewGuid().ToString();
+            var user = new User
+            {
+                UserId = newUser.UserId,
+                UserName = newUser.UserName,
+                PassWord = newUser.Password
+            };
+            var userInfo = new UserInfo
+            {
+                UserId = newUser.UserId,
+                Name = newUser.Name,
+                Phone = newUser.Phone,
+                Email = newUser.Email,
+                Address = newUser.Address,
+                Birthday = newUser.Birthday,
+                Gender = newUser.Gender,
+                Role = newUser.Role
+            };
+            _context.Users.Add(user);
+            _context.UserInfos.Add(userInfo);
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Thêm sản phẩm thành công!" });
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromBody] UserInfoAdmin user)
+        {
+            if (string.IsNullOrEmpty(user.UserId))
+            {
+                return BadRequest(new { message = "ID không hợp lệ!" });
+            }
+
+            var updateUser = await _context.UserInfos.FindAsync(user.UserId);
+            if (updateUser == null)
+            {
+                return NotFound(new { message = "Không tìm thấy người dùng!" });
+            }
+
+            bool isUserNameTaken = await _context.Users
+                .AnyAsync(u => u.UserName == user.UserName && u.UserId != user.UserId);
+
+            if (isUserNameTaken)
+            {
+                return BadRequest(new { message = "Tên đăng nhập đã tồn tại!" });
+            }
+
+            updateUser.Address = user.Address;
+            updateUser.Birthday = user.Birthday;
+            updateUser.Email = user.Email;
+            updateUser.Name = user.Name;
+            updateUser.Phone = user.Phone;
+            updateUser.Role = user.Role;
+            updateUser.Gender = user.Gender;
+
+            var userAccount = await _context.Users.FindAsync(user.UserId);
+            if (userAccount == null)
+            {
+                return NotFound(new { message = "Tài khoản không tồn tại!" });
+            }
+
+            userAccount.UserName = user.UserName;
+            userAccount.PassWord = user.Password;
+
+            _context.Users.Update(userAccount);
+            _context.UserInfos.Update(updateUser);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Cập nhật người dùng thành công!" });
+        }
+
+    [HttpPut]
+        public async Task<IActionResult> UpdateProduct([FromBody] Storage updatedProduct)
+        {
+            if (string.IsNullOrEmpty(updatedProduct.ItemId))
+            {
+                return BadRequest(new { message = "ID sản phẩm không hợp lệ!" });
+            }
+
+            var product = await _context.Storages.FindAsync(updatedProduct.ItemId);
+            if (product == null)
+            {
+                return NotFound(new { message = "Không tìm thấy sản phẩm!" });
+            }
+
+            product.ItemName = updatedProduct.ItemName;
+            product.ItemPrice = updatedProduct.ItemPrice;
+            product.ItemAmount = updatedProduct.ItemAmount;
+
+            _context.Storages.Update(product);
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Cập nhật sản phẩm thành công!" });
         }
     }
 }

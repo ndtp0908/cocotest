@@ -35,10 +35,133 @@
             </div>
             <div id="productManager" class="tab-content d-none">
                 <h3>Quản lý sản phẩm</h3>
+                <!-- Nút mở form -->
+                <button class="btn btn-success mb-3" onclick="showProductForm()">Thêm sản phẩm</button>
+
+                <!-- Bảng sản phẩm -->
+                <table class="table mt-2">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        <tr><td colspan="5" class="text-center">Chưa có dữ liệu</td></tr>
+                    </tbody>
+                </table>
+
+                <!-- Form thêm/sửa sản phẩm (Ẩn mặc định) -->
+                <div id="productFormContainer" class="d-none">
+                    <h4 id="formTitle">Thêm sản phẩm</h4>
+                    <form id="productForm">
+                        <input type="hidden" id="productId">
+                        <div class="mb-3">
+                            <label for="productName">Tên sản phẩm:</label>
+                            <input type="text" class="form-control" id="productName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice">Giá:</label>
+                            <input type="number" class="form-control" id="productPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productAmount">Số lượng:</label>
+                            <input type="number" class="form-control" id="productAmount" required>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveProduct()">Lưu sản phẩm</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideProductForm()">Hủy</button>
+                    </form>
+                </div>
             </div>
+            <!-- Toast thông báo -->
+            <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+            </div>
+
             <div id="userManager" class="tab-content d-none">
                 <h3>Quản lý tài khoản</h3>
+                <!-- Nút mở form -->
+                <button class="btn btn-success mb-3" onclick="showUserForm()">Thêm tài khoản</button>
+
+                <!-- Bảng tài khoản -->
+                <table class="table mt-2">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>Số điện thoại</th>
+                            <th>Email</th>
+                            <th>Địa chỉ</th>
+                            <th>Giới tính</th>
+                            <th>Ngày sinh</th>
+                            <th>Chức vụ</th>
+                            <th>Tên tài khoản</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr><td colspan="10" class="text-center">Chưa có dữ liệu</td></tr>
+                    </tbody>
+                </table>
+
+                <!-- Form thêm/sửa tài khoản (Ẩn mặc định) -->
+                <div id="userFormContainer" class="d-none">
+                    <h4 id="formTitle">Thêm tài khoản</h4>
+                    <form id="userForm">
+                        <input type="hidden" id="userId">
+                        <div class="mb-3">
+                            <label for="name">Tên:</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone">Số điện thoại:</label>
+                            <input type="text" class="form-control" id="phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email">Email:</label>
+                            <input type="text" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address">Địa chỉ:</label>
+                            <input type="text" class="form-control" id="address" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gender">Giới tính:</label>
+                            <select class="form-control" id="gender" required>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="birthday">Ngày sinh:</label>
+                            <input type="date" class="form-control" id="birthday" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="role">Chức vụ:</label>
+                            <select class="form-control" id="role" required>
+                                <option value="User">User</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userName">Tài khoản:</label>
+                            <input type="text" class="form-control" id="userName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password">Mật khẩu:</label>
+                            <input type="password" class="form-control" id="password">
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveUser()">Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideUserForm()">Hủy</button>
+                    </form>
+                </div>
             </div>
+
+            <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+            </div>
+
             <div id="changePassword" class="tab-content d-none">
                 <h2>Đổi mật khẩu</h2>
                 <form id="passwordForm" method="post" asp-controller="Admin" asp-action="ChangePassword">
@@ -69,14 +192,264 @@
             tab.classList.add('d-none');
         });
         document.getElementById(tabId).classList.remove('d-none');
+
+        if (tabId === "userManager") {
+            loadUsers();
+        }
+        if (tabId === "productManager") {
+            loadProducts();
+        }
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const userData = localStorage.getItem("user");
-        const user = JSON.parse(userData);
-        console.log(user.userId)
-        document.getElementById("userId").value = user.userId || "";
-    });
+    function loadProducts() {
+        fetch('/Admin/Admin/GetProducts')
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById("productTableBody");
+                tableBody.innerHTML = "";
+
+                if (data.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='5' class='text-center'>Không có sản phẩm nào</td></tr>";
+                    return;
+                }
+
+                data.forEach(product => {
+                    let row = `
+                        <tr>
+                            <td>${product.itemId}</td>
+                            <td>${product.itemName}</td>
+                            <td>${product.itemPrice.toLocaleString()} VND</td>
+                            <td>${product.itemAmount}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm"
+                                    onclick="editProduct('${product.itemId}', '${product.itemName}', ${product.itemPrice}, ${product.itemAmount})">
+                                    Sửa
+                                </button>
+                            </td>
+                        </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error("Lỗi khi tải sản phẩm:", error));
+    }
+
+    function loadUsers() {
+        fetch('/Admin/Admin/GetUsers')
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById("userTableBody");
+                tableBody.innerHTML = "";
+
+                if (data.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='10' class='text-center'>Không có người dùng nào</td></tr>";
+                    return;
+                }
+
+                data.forEach(user => {
+                    let row = `
+                            <tr>
+                                <td>${user.userId}</td>
+                                <td>${user.name}</td>
+                                <td>${user.phone}</td>
+                                <td>${user.email}</td>
+                                <td>${user.address}</td>
+                                <td>${user.gender}</td>
+                                <td>${user.birthday}</td>
+                                <td>${user.role}</td>
+                                <td>${user.userName}</td>
+                                <td>
+                                        <button class="btn btn-warning btn-sm"
+        onclick="editUser('${user.userId}', '${user.name}', '${user.phone}', '${user.email}', '${user.address}', '${user.gender}', '${user.birthday}', '${user.role}', '${user.userName}')">
+        Sửa
+    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.userId})">Xóa</button>
+                                </td>
+                            </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error("Lỗi khi tải người dùng:", error));
+    }
+
+    function showUserForm(isEdit = false) {
+        document.getElementById("userFormContainer").classList.remove("d-none");
+        document.getElementById("formTitle").innerText = isEdit ? "Chỉnh sửa tài khoản" : "Thêm tài khoản";
+
+        if (!isEdit) {
+            document.getElementById("userForm").reset();
+            document.getElementById("userId").value = "";
+        }
+    }
+
+    function showProductForm(isEdit = false) {
+        document.getElementById("productFormContainer").classList.remove("d-none");
+        document.getElementById("formTitle").innerText = isEdit ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm";
+
+        if (!isEdit) {
+            document.getElementById("productForm").reset();
+            document.getElementById("productId").value = "";
+        }
+    }
+
+    function hideUserForm() {
+        document.getElementById("userFormContainer").classList.add("d-none");
+    }
+
+    function editUser(id, name, phone, email, address, gender, birthday, role, userName) {
+        document.getElementById("userId").value = id;
+        document.getElementById("name").value = name;
+        document.getElementById("phone").value = phone;
+        document.getElementById("email").value = email;
+        document.getElementById("address").value = address;
+        document.getElementById("gender").value = gender;
+        document.getElementById("birthday").value = birthday;
+        document.getElementById("role").value = role;
+        document.getElementById("userName").value = userName;
+        showUserForm(true);
+    }
+
+
+    function saveUser() {
+        let id = document.getElementById("userId").value.trim();
+        let name = document.getElementById("name").value.trim();
+        let phone = document.getElementById("phone").value.trim();
+        let email = document.getElementById("email").value.trim();
+        let address = document.getElementById("address").value.trim();
+        let gender = document.getElementById("gender").value;
+        let birthday = document.getElementById("birthday").value;
+        let role = document.getElementById("role").value;
+        let userName = document.getElementById("userName").value.trim();
+        let password = document.getElementById("password").value.trim();
+
+        // Kiểm tra dữ liệu hợp lệ
+        if (!name || !phone || !email || !userName) {
+            showToast("Vui lòng nhập đầy đủ thông tin!", "danger");
+            return;
+        }
+
+        let userData = {
+            userId: id ? id : null,
+            userName: userName,
+            name:name,
+            phone: phone,
+            email: email,
+            address: address,
+            gender: gender,
+            birthday: birthday,
+            role: role,
+            password: password
+        };
+
+        let apiUrl = id ? "/Admin/Admin/UpdateUser" : "/Admin/Admin/AddUser";
+        let method = id ? "PUT" : "POST";
+
+        fetch(apiUrl, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userData)
+        })
+            .then(response => response.json())
+            .then(result => {
+                showToast(result.message, "success");
+                hideUserForm();
+                loadUsers();
+            })
+            .catch(error => showToast("Lỗi khi lưu tài khoản!", "danger"));
+    }
+
+
+    function hideUserForm() {
+        document.getElementById("userFormContainer").classList.add("d-none");
+    }
+
+    function deleteUser(id) {
+        if (confirm("Bạn có chắc muốn xóa tài khoản này?")) {
+            fetch(`/Admin/Admin/DeleteUser/${id}`, { method: "DELETE" })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Xóa thành công!");
+                        loadUsers();
+                    } else {
+                        alert("Lỗi khi xóa tài khoản!");
+                    }
+                })
+                .catch(error => console.error("Lỗi khi xóa tài khoản:", error));
+        }
+    }
+
+    function hideProductForm() {
+        document.getElementById("productFormContainer").classList.add("d-none");
+    }
+
+    function editProduct(id, name, price, amount) {
+        document.getElementById("productId").value = id;
+        document.getElementById("productName").value = name;
+        document.getElementById("productPrice").value = price;
+        document.getElementById("productAmount").value = amount;
+        showProductForm(true);
+    }
+
+    function showToast(message, type = "success") {
+        let toastContainer = document.getElementById("toastContainer");
+        let toastId = "toast" + Date.now();
+
+        let toastHtml = `
+            <div id="${toastId}" class="toast align-items-center text-white bg-${type} border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+
+        toastContainer.innerHTML += toastHtml;
+
+        setTimeout(() => {
+            document.getElementById(toastId)?.remove();
+        }, 3000);
+    }
+
+    function saveProduct() {
+        let id = document.getElementById("productId").value.trim();
+        let name = document.getElementById("productName").value;
+        let price = document.getElementById("productPrice").value;
+        let amount = document.getElementById("productAmount").value;
+
+        if (!name || price <= 0 || amount < 0) {
+            showToast("Vui lòng nhập thông tin hợp lệ!", "danger");
+            return;
+        }
+
+        let productData = {
+            itemId: id ? id : null,
+            itemName: name,
+            itemPrice: parseFloat(price),
+            itemAmount: parseInt(amount)
+        };
+
+        let apiUrl = id ? "/Admin/Admin/UpdateProduct" : "/Admin/Admin/AddProduct";
+        let method = id ? "PUT" : "POST";
+
+        fetch(apiUrl, {
+            method: method,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(productData)
+        })
+            .then(response => response.json())
+            .then(result => {
+                showToast(result.message, "success");
+                hideProductForm();
+                loadProducts();
+            })
+            .catch(error => showToast("Lỗi khi lưu sản phẩm!", "danger"));
+    }
 
     function loadUserData() {
         const userData = localStorage.getItem("user");
