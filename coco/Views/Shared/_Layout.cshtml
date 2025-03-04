@@ -29,11 +29,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/About">Về chúng tôi</a>
                         </li>
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                                 <img style="width:50px;height:50px" src="/image/mainlogo.png" />
                             </a>
-                        </li>
+                        </li> *@
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="/Shopping">Giỏ hàng</a>
                         </li>
@@ -54,14 +54,14 @@
     </header>
 
     <div class="main-body pt-5">
-        <main class="pt-3" role="main">
+        <main class="pt-2" role="main">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container d-flex justify-content-center">
-            &copy; 2025 - CoCoPure - <a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+            &copy; 2025 - CoCoPure - <a asp-area="" asp-controller="Home" asp-action="Index" style="text-decoration: none; color:black">Trang chủ</a>
         </div>
     </footer>
 

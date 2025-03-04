@@ -2,7 +2,7 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<div>
+<div style="background-color: #f8f8f8;">
     <div class="image-container">
         <img src="../image/background.jpg" alt="Background" />
     </div>
@@ -12,37 +12,518 @@
             height: auto;
         }
     </style>
-    <div class="container d-flex justify-content-center">
-        <div class="">
-            Cái gì đó
+    <div class="home1 container d-flex align-items-center">
+        <div class="image-container-home1 flex-fill text-center">
+            <a href="/product"><img src="../image/home1.jpg" alt="Sản phẩm dầu gội" class="img-fluid"></a>
         </div>
-        <div style="width: 50px;"></div>
-        <div class="">
-            Cái gì đó
+        <div class="content-home1 flex-fill ms-5-home1">
+            <h3 class="text-success fw-bold">COCOPURE</h3>
+            <h4 class="text-warning">– CỨU TINH CHO MÁI TÓC CỦA BẠN –</h4>
+
+            <h5 class="fw-bold">Tầm nhìn:</h5>
+            <p>Trở thành thương hiệu tiên phong về sản phẩm chăm sóc tóc hữu cơ, bền vững và thân thiện với môi trường.</p>
+
+            <h5 class="fw-bold">Sứ mệnh:</h5>
+            <p>Cung cấp các sản phẩm chăm sóc tóc chất lượng cao, an toàn và hiệu quả, kết hợp dầu dừa ép lạnh với tinh dầu thiên nhiên để mang lại trải nghiệm chăm sóc tóc toàn diện.</p>
+
+            <h5 class="fw-bold">Giá trị:</h5>
+            <p>Tự nhiên - An toàn - Hiệu quả - Bền vững.</p>
         </div>
     </div>
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about building Web apps with ASP.NET Core.</p>
+<style>
+    .content-home1 h3 {
+            font-size:80px;
+        }
+
+        .content-home1 h4 {
+            font-size: 35px;
+        }
+
+        .content-home1 h5 {
+            font-size: 30px;
+        }
+
+        .content-home1 p {
+            font-size: 20px;
+        }
+        .home1 {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .image-container-home1, .content-home1 {
+            flex: 1;
+            max-width: 50%;
+        }
+
+        .img-fluid-home1 {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .ms-5-home1 {
+            margin-left: 20px;
+        }
+
+        .image-container-home1 img {
+            border-radius: 10px;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            height: auto;
+            display: block; 
+            margin: 0 auto;
+        }
+
+</style>
+    <div class="home1 container d-flex align-items-center">
+        <div class="content-home1 flex-fill ms-5-home1">
+            <h3 class="text-success fw-bold">COCOPURE</h3>
+            <h4 class="text-warning">– Sản phẩm ủ tóc CocoPure tốt không? –</h4>
+            <p>Sản phẩm ủ tóc CocoPure đang nhận được sự quan tâm từ nhiều bạn gái yêu thích chăm sóc tóc từ thiên nhiên. Với công thức chiết xuất từ dầu dừa ép lạnh và tinh dầu gừng, sản phẩm giúp nuôi dưỡng tóc sâu từ gốc đến ngọn, giảm gãy rụng và mang lại mái tóc mềm mượt.</p>
+
+            <h4 class="text-warning">– CocoPure có gì khác biệt? –</h4>
+            <p>Không giống như các sản phẩm chăm sóc tóc chứa silicon hay hóa chất công nghiệp, CocoPure sử dụng 100% nguyên liệu thiên nhiên, an toàn và lành tính cho da đầu. Dầu dừa ép lạnh giúp cung cấp độ ẩm sâu, phục hồi mái tóc xơ rối, trong khi tinh dầu gừng giúp kích thích lưu thông máu dưới da đầu, thúc đẩy tóc mọc nhanh và chắc khỏe.</p>
+        </div>
+        <div class="image-container-home1 flex-fill text-center">
+            <a href="/product"><img src="../image/home2.jpg" alt="Sản phẩm dầu gội" class="img-fluid"></a>
+        </div>
+        
     </div>
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about building Web apps with ASP.NET Core.</p>
+    <div class="cocopure container">
+        <h2 class="cocopure__title">
+            ƯU ĐIỂM VƯỢT TRỘI CỦA <span class="cocopure__highlight">COCOPURE</span>
+        </h2>
+
+        <div class="cocopure__content">
+            <div class="cocopure__image-box">
+                <a href="/product"><img src="../image/home3.jpg" alt="Sản phẩm dầu gội xả"></a>
+            </div>
+
+            <div class="cocopure__timeline">
+                <div class="cocopure__step">
+                    <h3>Nguyên liệu thiên nhiên an toàn</h3>
+                    <p>Không chứa paraben, sulfate hay hóa chất độc hại, an toàn cho cả tóc nhuộm và da đầu nhạy cảm.
+                    </p>
+                </div>
+                <div class="cocopure__step">
+                    <h3>Kích thích mọc tóc và ngăn ngừa gãy rụng</h3>
+                    <p>Tinh dầu gừng kích thích tuần hoàn máu, giúp chân tóc chắc khỏe hơn.</p>
+                </div>
+                <div class="cocopure__step">
+                    <h3>Phục hồi tóc hư tổn</h3>
+                    <p>Vitamin E và Silk Protein thẩm thấu vào sợi tóc, phục hồi tóc khô xơ, chẻ ngọn.</p>
+                </div>
+                <div class="cocopure__step">
+                    <h3>Hương thơm nhẹ nhàng</h3>
+                    <p>Mùi hương thiên nhiên dịu nhẹ, không gây khó chịu.</p>
+                </div>
+                <div class="cocopure__step">
+                    <h3>Phù hợp cho mọi loại tóc</h3>
+                    <p>Từ tóc khô xơ, tóc dầu đến tóc nhuộm, sản phẩm đều mang lại hiệu quả rõ rệt.</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about building Web apps with ASP.NET Core.</p>
+    <div class="cocopure container">
+        <h2 class="cocopure__title"> <span class="cocopure__highlight">HƯỚNG DẪN SỬ DỤNG</span>
+        </h2>
+        <div class="cocopure__content2">
+            <div class="cocopure__image-box">
+                <a href="/product"><img src="../image/home4.jpg" alt="Sản phẩm dầu gội xả"></a>
+            </div>
+        </div>
     </div>
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about building Web apps with ASP.NET Core.</p>
+<style>
+        /* Định dạng tổng thể của vùng An Thảo Hương */
+        .cocopure {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0 auto;
+            padding: 50px 20px;
+            max-width: 100%;
+            text-align: center;
+        }
+
+        .cocopure__title {
+            color: #e67e22;
+            font-size: 50px;
+        }
+
+        .cocopure__highlight {
+            color: #28a745;
+        }
+
+        .cocopure__subtitle {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .cocopure__orange-text {
+            color: #e67e22;
+            font-weight: bold;
+        }
+
+        /* Bố cục chính */
+        .cocopure__content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .cocopure__content2 {
+            display: flex;
+            align-items: center;
+            justify-content: center ;
+            margin-top: 30px;
+        }
+
+        /* Hình ảnh sản phẩm */
+        .cocopure__image-box img {
+            width: 60%;
+            border-radius: 10px;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Timeline - các bước sử dụng sản phẩm */
+        .cocopure__timeline {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cocopure__step {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            text-align: left;
+            max-width:70%;
+        }
+
+            .cocopure__step::before {
+                content: "";
+                position: absolute;
+                left: -15px;
+                top: 20px;
+                width: 10px;
+                height: 10px;
+                background: green;
+                border-radius: 50%;
+            }
+
+            .cocopure__step h3 {
+                color: #28a745;
+                font-size: 18px;
+            }
+
+            .cocopure__step p {
+                color: #555;
+                font-size: 14px;
+            }
+
+</style>
+    <div class="reviews text-center">
+        <h1 class="reviews__title">Đánh giá từ khách hàng</h1>
+
+        <div class="reviews__container">
+            <div class="review__card">
+                <div class="review__avatar">
+                    <img src="../image/avatar1.jpg" alt="Minh Thư">
+                </div>
+                <p class="review__text">
+                    "Mình đã sử dụng sản phẩm này trong 2 tuần và thấy tóc giảm gãy rụng rõ rệt, tóc con mọc lên rất nhiều."
+                </p>
+                <p class="review__author">– Minh Thư, 25 tuổi</p>
+            </div>
+
+            <div class="review__card">
+                <div class="review__avatar">
+                    <img src="../image/avatar2.jpg" alt="Lan Anh">
+                </div>
+                <p class="review__text">
+                    "Mùi hương nhẹ nhàng, tóc mềm và bồng bềnh hơn sau mỗi lần ủ."
+                </p>
+                <p class="review__author">– Lan Anh, 29 tuổi</p>
+            </div>
+
+            <div class="review__card">
+                <div class="review__avatar">
+                    <img src="../image/avatar3.jpg" alt="Khách hàng khác">
+                </div>
+                <p class="review__text">
+                    "Sản phẩm phù hợp với tóc nhuộm, không làm khô tóc mà còn giúp tóc bóng khỏe hơn."
+                </p>
+                <p class="review__author">– Hoàng Nam, 32 tuổi</p>
+            </div>
+        </div>
+        <br /><br />
+        <h1 class="reviews__title">Hãy thử trải nghiệm và cảm nhận sự thay đổi tích cực từ mái tóc của bạn!</h1>
     </div>
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about building Web apps with ASP.NET Core.</p>
+<style>
+    .reviews {
+    font-family: Arial, sans-serif;
+    margin: 50px auto;
+    text-align: center;
+    max-width: 900px;
+}
+
+.reviews__title {
+    font-size: 32px;
+    color: #e67e22;
+    margin-bottom: 10px;
+}
+
+.reviews__subtitle {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.reviews__container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.review__card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 30%;
+    min-width: 250px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.review__avatar {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #28a745;
+}
+
+.review__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.review__text {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.review__author {
+    font-size: 14px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+</style>
+    <div class="product-section">
+        <div class="product-container">
+            <div class="order-form">
+                <h2>NẾU BẠN CÓ GÓP Ý HÃY GỬI VỀ</h2>
+                <p class="order-form__highlight">COCOPURE</p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" placeholder="Họ và tên" required>
+                        <input type="tel" placeholder="Số điện thoại" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Email" required>
+                        <input type="text" placeholder="Địa chỉ" required>
+                    </div>
+                    <textarea placeholder="Ghi chú (nếu có)"></textarea>
+                    <button type="submit">Gửi</button>
+                </form>
+            </div>
+
+        </div>
+        <div class="d-flex">
+        <div class="company-info">
+            <h3>CÔNG TY CỔ PHẦN COCOPURE</h3>
+            <p><i class="fas fa-map-marker-alt"></i> Địa chỉ: Nguyễn Văn Cừ Nối Dài, Ninh Kiều, Cần thơ, Việt Nam</p>
+            <p><i class="fas fa-phone"></i> Điện thoại: 0965464982</p>
+            <p><i class="fas fa-envelope"></i> Email: cocopuregr2@gmail.com</p>
+        </div>
+        <div class="customer-service">
+            <h3>CUSTOMER SERVICE</h3>
+            <ul>
+                <li><a href="#">Returns & Shipping Policy</a></li>
+                <li><a href="#">Terms of Use</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+        </div>
     </div>
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about building Web apps with ASP.NET Core.</p>
-    </div>
+
+    <style>
+        .product-section {
+            background: linear-gradient(to bottom, #fff, #008000);
+            padding: 50px 20px;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column; /* Sắp xếp theo chiều dọc */
+            align-items: center; /* Căn giữa nội dung */
+            justify-content: center;
+        }
+
+
+        .product-container {
+            display: flex;
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            gap: 50px;
+            flex-wrap: wrap;
+            max-width: 1000px; /* Mở rộng hơn để tránh lệch */
+            width: 100%;
+            margin: auto; /* Căn giữa toàn bộ */
+        }
+
+        .product-price {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: red;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .order-form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #008000;
+            width: 300px;
+        }
+
+        .order-form__highlight {
+            color: orange;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .order-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .order-form button {
+            background: #008000;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .company-info, .customer-service {
+            margin-top: 20px;
+            text-align: center;
+            color: white;
+        }
+
+            .company-info{
+                margin-left:-100px;
+                padding-right:20px;
+            }
+            .customer-service{
+                padding-left:100px;
+            }
+
+            .customer-service ul {
+                list-style: none;
+                padding: 0;
+            }
+
+                .customer-service ul li a {
+                    color: white;
+                    text-decoration: none;
+                }
+
+        .order-form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
+        }
+
+            .order-form h2 {
+                color: #28a745;
+            }
+
+        .order-form__highlight {
+            font-weight: bold;
+            color: #e67e22;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            gap: 10px;
+        }
+
+            .form-group input {
+                flex: 1;
+            }
+
+        .order-form input,
+        .order-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .order-form textarea {
+            height: 80px;
+            resize: none;
+        }
+
+        .order-form button {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            .order-form button:hover {
+                background: #218838;
+            }
+
+        .order-form, .product-image {
+            flex: 1; /* Đảm bảo 2 phần chiếm không gian đều */
+            min-width: 300px; /* Giữ không bị co lại quá nhỏ */
+            max-width: 700px; /* Giới hạn chiều rộng */
+            text-align: center;
+        }
+    </style>
+
 </div>
