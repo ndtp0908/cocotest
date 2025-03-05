@@ -2,6 +2,13 @@
     ViewData["Title"] = "Trang chủ";
 }
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success notification">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 <div style="background-color: #f8f8f8;">
     <div class="image-container">
         <img src="../image/background.jpg" alt="Background" />
@@ -333,16 +340,16 @@
             <div class="order-form">
                 <h2>NẾU BẠN CÓ GÓP Ý HÃY GỬI VỀ</h2>
                 <p class="order-form__highlight">COCOPURE</p>
-                <form>
+                <form method="post" asp-controller="Home" asp-action="Box">
                     <div class="form-group">
-                        <input type="text" placeholder="Họ và tên" required>
-                        <input type="tel" placeholder="Số điện thoại" required>
+                        <input type="text" name="name" placeholder="Họ và tên" required>
+                        <input type="text" name="phone" placeholder="Số điện thoại" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" placeholder="Email" required>
-                        <input type="text" placeholder="Địa chỉ" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="text" name="address" placeholder="Địa chỉ" required>
                     </div>
-                    <textarea placeholder="Ghi chú (nếu có)"></textarea>
+                    <textarea class="form-group" name="note" placeholder="Ghi chú (nếu có)"></textarea>
                     <button type="submit">Gửi</button>
                 </form>
             </div>
@@ -374,21 +381,21 @@
             text-align: center;
             color: white;
             display: flex;
-            flex-direction: column; /* Sắp xếp theo chiều dọc */
-            align-items: center; /* Căn giữa nội dung */
+            flex-direction: column;
+            align-items: center; 
             justify-content: center;
         }
 
 
         .product-container {
             display: flex;
-            justify-content: center; /* Căn giữa theo chiều ngang */
-            align-items: center; /* Căn giữa theo chiều dọc */
+            justify-content: center; 
+            align-items: center;
             gap: 50px;
             flex-wrap: wrap;
-            max-width: 1000px; /* Mở rộng hơn để tránh lệch */
+            max-width: 1000px;
             width: 100%;
-            margin: auto; /* Căn giữa toàn bộ */
+            margin: auto;
         }
 
         .product-price {
@@ -519,11 +526,39 @@
             }
 
         .order-form, .product-image {
-            flex: 1; /* Đảm bảo 2 phần chiếm không gian đều */
-            min-width: 300px; /* Giữ không bị co lại quá nhỏ */
-            max-width: 700px; /* Giới hạn chiều rộng */
+            flex: 1;
+            min-width: 300px;
+            max-width: 700px;
             text-align: center;
         }
     </style>
+    <style>
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+            background-color: white;
+            border: 1px solid #d1e7dd;
+        }
 
+        .alert-success {
+            color: #0f5132;
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+        }
+        .hide {
+            opacity: 0;
+        }
+    </style>
 </div>
+<script>
+    setTimeout(function () {
+        document.querySelectorAll('.notification').forEach(el => el.classList.add('hide'));
+    }, 3000);
+</script>

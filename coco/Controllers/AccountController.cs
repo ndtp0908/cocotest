@@ -91,7 +91,7 @@ namespace coco.Controllers
             }
 
             var userId = Guid.NewGuid().ToString();
-
+            bool isFirstUser = !await _context.Users.AnyAsync();
             var account = new User
             {
                 UserId = userId,
@@ -108,11 +108,30 @@ namespace coco.Controllers
                 Address = address,
                 Gender = gender,
                 Birthday = birthday,
-                Role = "User"
+                Role = isFirstUser ? "Admin" : "User"
             };
-
+            
+            var accountGuest = new User
+            {
+                UserId = "833816f9-77b1-402f-9cfe-ec3c0f549a70",
+                UserName = "guest@cocopure",
+                PassWord = "cocopure@123",
+            };
+            var userGuest = new UserInfo
+            {
+                UserId = "833816f9-77b1-402f-9cfe-ec3c0f549a70",
+                Name = "Guest",
+                Phone = "0123456789",
+                Email = "guest@cocopure.com",
+                Address = "VN",
+                Gender = "Nam",
+                Birthday = new DateOnly(2000, 1, 1),
+                Role="User"
+            };
             _context.Users.Add(account);
             _context.UserInfos.Add(userInfo);
+            _context.Users.Add(accountGuest);
+            _context.UserInfos.Add(userGuest);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Login");

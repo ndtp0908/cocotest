@@ -11,6 +11,7 @@ builder.Services.AddDbContext<CocopureV1Context>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("cocopureV1")));
 
 builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] {UnicodeRanges.All}));
+builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.AddSession(options =>
 {

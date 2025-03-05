@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using coco.Models;
+using Newtonsoft.Json;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace coco.Areas.Admin.Controllers
 {
@@ -80,6 +83,78 @@ namespace coco.Areas.Admin.Controllers
 
             return Json(products);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBills()
+        {
+            var bills = await _context.Bills
+                .Select(b => new
+                {
+                    b.BillId,
+                    b.UserId,
+                    b.FullName,
+                    b.Phone,
+                    b.Discount,
+                    b.Total,
+                    b.PaymentMethod,
+                    b.EndAddress,
+                    b.Status,
+                    b.DayBought
+                })
+                .ToListAsync();
+
+            return Json(bills);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportBills()
+        {
+            var bills = await _context.Bills.ToListAsync(); // Lấy danh sách bill từ database
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Bills");
+                var currentRow = 1;
+
+                // Tạo header
+                worksheet.Cell(currentRow, 1).Value = "Bill ID";
+                worksheet.Cell(currentRow, 2).Value = "User ID";
+                worksheet.Cell(currentRow, 3).Value = "Full Name";
+                worksheet.Cell(currentRow, 4).Value = "Phone";
+                worksheet.Cell(currentRow, 5).Value = "Discount";
+                worksheet.Cell(currentRow, 6).Value = "Total";
+                worksheet.Cell(currentRow, 7).Value = "Payment Method";
+                worksheet.Cell(currentRow, 8).Value = "End Address";
+                worksheet.Cell(currentRow, 9).Value = "Status";
+                worksheet.Cell(currentRow, 10).Value = "Day Bought";
+
+                // Thêm dữ liệu vào file Excel
+                foreach (var bill in bills)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = bill.BillId;
+                    worksheet.Cell(currentRow, 2).Value = bill.UserId;
+                    worksheet.Cell(currentRow, 3).Value = bill.FullName;
+                    worksheet.Cell(currentRow, 4).Value = bill.Phone;
+                    worksheet.Cell(currentRow, 5).Value = bill.Discount;
+                    worksheet.Cell(currentRow, 6).Value = bill.Total;
+                    worksheet.Cell(currentRow, 7).Value = bill.PaymentMethod;
+                    worksheet.Cell(currentRow, 8).Value = bill.EndAddress;
+                    worksheet.Cell(currentRow, 9).Value = bill.Status;
+                    worksheet.Cell(currentRow, 10).Value = bill.DayBought.ToString();
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Bills.xlsx");
+                }
+            }
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetUsers()
@@ -198,7 +273,7 @@ namespace coco.Areas.Admin.Controllers
             return Ok(new { message = "Cập nhật người dùng thành công!" });
         }
 
-    [HttpPut]
+        [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromBody] Storage updatedProduct)
         {
             if (string.IsNullOrEmpty(updatedProduct.ItemId))
@@ -219,6 +294,38 @@ namespace coco.Areas.Admin.Controllers
             _context.Storages.Update(product);
             await _context.SaveChangesAsync();
             return Ok(new { message = "Cập nhật sản phẩm thành công!" });
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateBill([FromBody]Bill billData)
+        {
+            if (billData == null) return BadRequest(new { message = "Dữ liệu hóa đơn không hợp lệ!" });
+            if (string.IsNullOrEmpty(billData.BillId))
+            {
+                return BadRequest(new { message = "ID không hợp lệ!" });
+            }
+
+            var updateBill = await _context.Bills.FindAsync(billData.BillId);
+            if (updateBill == null)
+            {
+                return NotFound(new { message = "Không tìm thấy hóa đơn!" });
+            }
+
+
+            updateBill.UserId = billData.UserId;
+            updateBill.FullName = billData.FullName;
+            updateBill.Phone = billData.Phone;
+            updateBill.Discount = billData.Discount;
+            updateBill.Total = billData.Total;
+            updateBill.PaymentMethod = billData.PaymentMethod;
+            updateBill.EndAddress = billData.EndAddress;
+            updateBill.Status = billData.Status;
+            updateBill.DayBought = billData.DayBought;
+
+            _context.Bills.Update(updateBill);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Cập nhật hóa đơn thành công!" });
         }
     }
 }

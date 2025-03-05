@@ -32,6 +32,81 @@
         <div class="col-md-9">
             <div id="billManager" class="tab-content">
                 <h2>Quản lý hóa đơn</h2>
+                <button class="btn btn-success mb-3" onclick="showBillForm()">Thêm hóa đơn</button>
+                <button class="btn btn-success mb-3" onclick="exportExcel()">Xuất file Excel</button>
+                <!-- Bảng hóa đơn -->
+                <table class="table mt-2">
+                    <thead>
+                        <tr>
+                            <th>Bill ID</th>
+                            <th>User ID</th>
+                            <th>Tên khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Giảm giá</th>
+                            <th>Tổng tiền</th>
+                            <th>Phương thức thanh toán</th>
+                            <th>Địa chỉ</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="billTableBody">
+                        <tr><td colspan="6" class="text-center">Chưa có dữ liệu</td></tr>
+                    </tbody>
+                </table>
+                <!-- Form thêm/sửa hóa đơn -->
+                <div id="billFormContainer" class="d-none">
+                    <h4 id="billFormTitle">Thêm hóa đơn</h4>
+                    <form id="billForm">
+                        <input type="hidden" id="billId">
+                        <div class="mb-3">
+                            <label for="userId">User ID:</label>
+                            <input type="text" class="form-control" id="userId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fullName">Tên khách hàng:</label>
+                            <input type="text" class="form-control" id="fullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone">Số điện thoại:</label>
+                            <input type="text" class="form-control" id="phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="discount">Giảm giá:</label>
+                            <input type="text" class="form-control" id="discount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="total">Tổng tiền:</label>
+                            <input type="number" class="form-control" id="total" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="paymentMethod">Phương thức thanh toán:</label>
+                            <select class="form-control" id="paymentMethod" name="paymentMethod" required>
+                                <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+                                <option value="bank">Chuyển khoản ngân hàng</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="endAddress">Địa chỉ:</label>
+                            <input type="text" class="form-control" id="endAddress" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="status">Trạng thái:</label>
+                            <select class="form-control" id="status">
+                                <option value="Đang xử lý">Đang xử lý</option>
+                                <option value="Hoàn thành">Hoàn thành</option>
+                                <option value="Đã hủy">Đã hủy</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="dayBought">Ngày tạo:</label>
+                            <input type="date" class="form-control" id="dayBought" required>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveBill()">Lưu hóa đơn</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideBillForm()">Hủy</button>
+                    </form>
+                </div>
             </div>
             <div id="productManager" class="tab-content d-none">
                 <h3>Quản lý sản phẩm</h3>
@@ -187,12 +262,18 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        loadBills();
+    });
     function showTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(tab => {
             tab.classList.add('d-none');
         });
         document.getElementById(tabId).classList.remove('d-none');
 
+        if (tabId === "billManager") {
+            loadBills();
+        }
         if (tabId === "userManager") {
             loadUsers();
         }
@@ -471,6 +552,114 @@
                 }
             }
         }
+    }
+</script>
+
+<script>
+    function loadBills() {
+        fetch('/Admin/Admin/GetBills')
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById("billTableBody");
+                tableBody.innerHTML = "";
+
+                if (data.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='11' class='text-center'>Không có hóa đơn nào</td></tr>";
+                    return;
+                }
+
+                data.forEach(bill => {
+                    let row = `
+            <tr>
+                <td>${bill.billId}</td>
+                <td>${bill.userId}</td>
+                <td>${bill.fullName}</td>
+                <td>${bill.phone}</td>
+                <td>${bill.discount}</td>
+                <td>${bill.total.toLocaleString()} VND</td>
+                <td>${bill.paymentMethod}</td>
+                <td>${bill.endAddress}</td>
+                <td>${bill.status}</td>
+                <td>${bill.dayBought}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick='editBill(${JSON.stringify(bill)})'>Sửa</button>
+                </td>
+            </tr>`;
+                    tableBody.innerHTML += row;
+                });
+
+            })
+            .catch(error => console.error("Lỗi khi tải hóa đơn:", error));
+    }
+
+    function showBillForm(isEdit = false) {
+        document.getElementById("billFormContainer").classList.remove("d-none");
+        document.getElementById("billFormTitle").innerText = isEdit ? "Chỉnh sửa hóa đơn" : "Thêm hóa đơn";
+
+        if (!isEdit) {
+            document.getElementById("billForm").reset();
+            document.getElementById("billId").value = "";
+        }
+    }
+
+    function hideBillForm() {
+        document.getElementById("billFormContainer").classList.add("d-none");
+    }
+
+    function editBill(bill) {
+        document.getElementById("billId").value = bill.billId || "";
+        document.getElementById("userId").value = bill.userId || "";
+        document.getElementById("fullName").value = bill.fullName || "";
+        document.getElementById("phone").value = bill.phone || "";
+        document.getElementById("discount").value = bill.discount !== undefined ? bill.discount : 0;
+        document.getElementById("total").value = bill.total !== undefined ? bill.total : 0;
+        document.getElementById("paymentMethod").value = bill.paymentMethod || "";
+        document.getElementById("endAddress").value = bill.endAddress || "";
+        document.getElementById("status").value = bill.status || "";
+        document.getElementById("dayBought").value = bill.dayBought || "";
+
+        showBillForm(true);
+    }
+
+
+
+    function saveBill() {
+        let billData = {
+            billId: document.getElementById("billId").value.trim(),
+            userId: document.getElementById("userId").value,
+            fullName: document.getElementById("fullName").value,
+            phone: document.getElementById("phone").value,
+            discount: parseFloat(document.getElementById("discount").value),
+            total: parseFloat(document.getElementById("total").value),
+            paymentMethod: document.getElementById("paymentMethod").value,
+            endAddress: document.getElementById("endAddress").value,
+            status: document.getElementById("status").value,
+            dayBought: document.getElementById("dayBought").value
+        };
+
+        fetch("/Admin/Admin/UpdateBill", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(billData)
+        })
+            .then(response => response.json())
+            .then(result => console.log("Kết quả:", result))
+            .catch(error => console.error("Lỗi khi gửi request:", error));
+    }
+    function exportExcel() {
+        fetch("/Admin/Admin/ExportBills") // Đổi URL theo backend
+            .then(response => response.blob()) // Chuyển response thành file blob
+            .then(blob => {
+                let link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Bills.xlsx"; // Đặt tên file tải về
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => console.error("Lỗi khi tải file Excel:", error));
     }
 </script>
 
