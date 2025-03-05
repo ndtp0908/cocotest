@@ -3,48 +3,167 @@
 @{
     ViewData["Title"] = "Sản phẩm";
 }
+<div class="product-layout">
+    <div class="product-left">
+        <h1 style="color:brown;">SẢN PHẨM CỦA <strong style="color:darkgreen;">COCOPURE</strong></h1>
+    <div class="product-info">
+        <h2>Thành phần</h2>
+            <p>● <strong>Dầu dừa ép lạnh:</strong> Cung cấp độ ẩm sâu, giúp tóc chắc khỏe và bóng mượt.</p>
+            <p>● <strong>Tinh dầu gừng:</strong> Kích thích tuần hoàn máu trên da đầu, giúp giảm rụng tóc và hỗ trợ mọc tóc mới.</p>
+            <p>● <strong>Vitamin E & B5:</strong> Cung cấp dưỡng chất giúp tóc chắc khỏe, ngăn ngừa gãy rụng.</p>
+            <p>● <strong>Silk Protein:</strong> Tạo lớp màng bảo vệ tóc, giúp tóc mềm mượt và đàn hồi tốt hơn.</p>
+        <img src="../image/product1.jpg"/>
+    </div>
+    <div class="product-info mt-1">
+            <h2>Nguồn gốc, xuất xứ</h2>
+            <p>Sản phẩm được sản xuất tại Việt Nam, sử dụng nguyên liệu thiên nhiên từ các vùng trồng dừa và gừng hữu cơ.</p>
+    </div>
+    <div class="product-info mt-1">
+        <h2>Công dụng</h2>
+            <p>● Giảm rụng tóc, kích thích mọc tóc.</p>
+            <p>● Dưỡng ẩm sâu, giúp tóc mềm mượt và chắc khỏe.</p>
+            <p>● Ngăn ngừa tóc gãy rụng, bảo vệ tóc khỏi tác động của môi trường.</p>
+            <img src="../image/product2.jpg" />
+    </div><div class="product-info mt-1">
+            <h2>USP (Unique Selling Proposition) của sản phẩm</h2>
+            <p>● Sử dụng dầu dừa ép lạnh nguyên chất thay vì dầu dừa thông thường, giúp giữ nguyên dưỡng chất.</p>
+            <p>● Kết hợp tinh dầu gừng – một thành phần độc đáo giúp kích thích mọc tóc và cải thiện sức khỏe da đầu.</p>
+            <p>● Công thức an toàn, không chứa hóa chất độc hại như paraben, sulfate hay silicon.</p>
+            <p>● Thiết kế theo mùa, mang lại trải nghiệm chăm sóc tóc đặc biệt cho từng thời điểm trong năm.</p>
+    </div>
+        <div class="product-info mt-1">
+            <h2>Tác dụng của thành phần</h2>
+            <p>● <strong>Dầu dừa ép lạnh: </strong>Cung cấp độ ẩm, bảo vệ lớp keratin tự nhiên của tóc.</p>
+            <p>● <strong>Tinh dầu gừng: </strong>Kích thích nang tóc, thúc đẩy quá trình mọc tóc.</p>
+            <p>● <strong>Vitamin E & B5: </strong>Giúp tóc chắc khỏe, phục hồi tóc hư tổn.</p>
+            <p>● <strong>Silk Protein:</strong> Tạo độ bóng tự nhiên và bảo vệ tóc khỏi hư tổn.</p>
+        </div>
+    </div>
+    <div class="product-list">
+        <h1 class="display-4"><strong>DANH SÁCH SẢN PHẨM</strong></h1>
 
-<div class="text-center">
-    <h1 class="display-4">Danh sách sản phẩm</h1>
-
-    @if (Model == null || !Model.Any())
-    {
-        <p>⚠️ Hiện tại không có sản phẩm nào.</p>
-    }
-    else
-    {
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Tên sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+        @if (Model == null || !Model.Any())
+        {
+            <p>⚠️ Hiện tại không có sản phẩm nào.</p>
+        }
+        else
+        {
+            <table class="table table-bordered">
+                <thead>
                     <tr>
-                        <td>@item.ItemName</td>
-                        <td class="price">@item.ItemPrice</td>
-                        <td>@item.ItemAmount</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm add-to-cart"
-                                    data-id="@item.ItemId"
-                                    data-name="@item.ItemName"
-                                    data-price="@item.ItemPrice">
-                                Thêm vào giỏ hàng
-                            </button>
-                        </td>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Hành động</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    }
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ItemName</td>
+                            <td class="price">@item.ItemPrice</td>
+                            <td>@item.ItemAmount</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm add-to-cart"
+                                        data-id="@item.ItemId"
+                                        data-name="@item.ItemName"
+                                        data-price="@item.ItemPrice">
+                                    Thêm vào giỏ hàng
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
 </div>
+<style>
+    .product-info img{
+        max-width:100%;
+        max-height:auto;
+    }
+    .product-info h2 {
+        color:coral;
+        font-size:40px;
+    }
 
-<!-- Bootstrap Toast Notification -->
+    .product-info p{
+        font-size:25px;
+    }
+    .table th,
+    .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    .product-layout {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+        max-width: 1200px;
+        margin: auto;
+        padding: 40px 20px;
+    }
+
+    .product-info {
+        flex: 1;
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        max-width:700px;
+        box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+        color: #333;
+    }
+
+    .product-list h1{
+        text-align: center;
+    }
+
+    .product-list {
+        position: fixed;
+        top: 100px; /* Giữ khoảng cách với header */
+        left: 80%; /* Đưa danh sách sản phẩm gần hơn về giữa */
+        transform: translateX(-50%); /* Canh giữa theo trục ngang */
+        width: 500px; /* Điều chỉnh độ rộng */
+        max-height: 80vh; /* Giới hạn chiều cao */
+        overflow-y: auto; /* Thanh cuộn nếu nội dung dài */
+        background: white; /* Đảm bảo không bị trong suốt */
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000; /* Đảm bảo hiển thị trên nội dung khác */
+    }
+
+
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table th,
+        .table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+    .add-to-cart {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+        .add-to-cart:hover {
+            background-color: #218838;
+        }
+
+</style>
+
 <div class="toast-container position-fixed top-0 end-0 p-3">
     <div id="cartToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -58,18 +177,13 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Định dạng tiền tệ VND
         function formatCurrency(price) {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
         }
-
-        // Cập nhật giá sản phẩm theo định dạng tiền tệ
         document.querySelectorAll(".price").forEach(function (element) {
             let price = parseFloat(element.textContent);
             element.textContent = formatCurrency(price);
         });
-
-        // Xử lý sự kiện "Thêm vào giỏ hàng"
         document.querySelectorAll(".add-to-cart").forEach(button => {
             button.addEventListener("click", function () {
                 let itemId = this.getAttribute("data-id");
@@ -88,10 +202,7 @@
                         itemAmount: 1
                     };
                 }
-
                 localStorage.setItem("tempShopping", JSON.stringify(cart));
-
-                // Hiển thị toast Bootstrap
                 let cartToast = new bootstrap.Toast(document.getElementById("cartToast"));
                 document.querySelector("#cartToast .toast-body").textContent = `✅ ${itemName} đã được thêm vào giỏ hàng!`;
                 cartToast.show();

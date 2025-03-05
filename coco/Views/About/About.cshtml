@@ -2,7 +2,89 @@
     ViewData["Title"] = "Về chúng tôi";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Về chúng tôi</h1>
-    <p>Learn about building Web apps with ASP.NET Core.</p>
+<div class="container my-3">
+    <h1 class="text-center display-4" style="color:brown; font-size:80px"><strong>VỀ CHÚNG TÔI</strong></h1>
+
+    <div class="row my-4">
+        <div class="about col-md-6">
+            <h2 class="text-primary">Câu chuyện khởi nghiệp</h2>
+            <p>
+                CocoPure ra đời từ niềm đam mê với các sản phẩm chăm sóc sắc đẹp và sức khỏe có nguồn gốc thiên nhiên.
+                Được sáng lập bởi nhóm sinh viên ngành Marketing, IT và Design, CocoPure hướng đến việc mang lại những sản phẩm an toàn, lành tính và phù hợp với nhu cầu hiện đại.
+            </p>
+            <p>
+                Bắt đầu từ việc nghiên cứu dầu dừa ép lạnh kết hợp với tinh dầu gừng, nhóm sáng lập nhận thấy tiềm năng
+                to lớn trong việc tạo ra một sản phẩm chăm sóc tóc chuyên biệt, giúp nuôi dưỡng mái tóc khỏe mạnh mà không gây kích ứng da đầu.
+            </p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="../image/about1.jpg" class="img-fluid rounded shadow-lg" alt="Câu chuyện khởi nghiệp">
+        </div>
+    </div>
+
+    <div class="row my-4 flex-row-reverse">
+        <div class="about col-md-6">
+            <h2 class="text-success">Câu chuyện thương hiệu</h2>
+            <p>
+                CocoPure mang sứ mệnh gìn giữ và phát triển vẻ đẹp tự nhiên, tận dụng những tinh túy từ nguyên liệu hữu cơ để tạo nên sản phẩm chăm sóc cá nhân an toàn và hiệu quả.
+            </p>
+            <p>
+                Cái tên <b>"CocoPure"</b> được ghép từ <b>"Coconut"</b> (dừa) và <b>"Pure"</b> (thuần khiết), thể hiện cam kết của thương hiệu trong việc cung cấp những sản phẩm tinh khiết nhất từ thiên nhiên.
+            </p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="../image/about2.jpg" class="img-fluid rounded shadow-lg" alt="Câu chuyện thương hiệu">
+        </div>
+    </div>
+
+    <div class="row my-4">
+        <div class="about col-md-6">
+            <h2 class="text-warning">Tầm nhìn - Sứ mệnh - Giá trị cốt lõi</h2>
+            <ul class="list-group">
+                <li class="list-group-item"><b>Tầm nhìn:</b> Trở thành thương hiệu tiên phong về sản phẩm chăm sóc tóc hữu cơ, bền vững và thân thiện với môi trường.</li>
+                <li class="list-group-item"><b>Sứ mệnh:</b> Cung cấp các sản phẩm chăm sóc tóc chất lượng cao, an toàn và hiệu quả.</li>
+                <li class="list-group-item"><b>Giá trị cốt lõi:</b> Tự nhiên - An toàn - Hiệu quả - Bền vững.</li>
+            </ul>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="../image/about3.jpg" class="img-fluid rounded shadow-lg" alt="Tầm nhìn và Sứ mệnh">
+        </div>
+    </div>
+
+    <div class="row my-4 flex-row-reverse">
+        <div class="about col-md-6">
+            <h2 class="text-danger">Đội ngũ sáng lập</h2>
+            <p>
+                CocoPure được sáng lập và vận hành bởi nhóm sinh viên có chuyên môn trong các lĩnh vực:
+            </p>
+            <ul>
+                <li><b>Marketing:</b> Xây dựng thương hiệu, chiến lược truyền thông và phát triển thị trường.</li>
+                <li><b>IT:</b> Xây dựng và quản lý các nền tảng số, website và thương mại điện tử.</li>
+                <li><b>Design:</b> Thiết kế bao bì, hình ảnh thương hiệu và nội dung sáng tạo.</li>
+            </ul>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="../image/about4.jpg" class="img-fluid rounded shadow-lg" alt="Đội ngũ sáng lập">
+        </div>
+    </div>
 </div>
+
+<style>
+    .list-group-item {
+        border: none !important; /* Xóa viền */
+        padding-left: 0; /* Xóa khoảng cách thừa bên trái */
+    }
+
+    .about h2 {
+        font-size:40px;
+    }
+
+    .about p {
+        font-size:25px;
+    }
+
+    .about li {
+        font-size: 25px;
+    }
+</style>
+
