@@ -60,29 +60,18 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
             &copy; 2025 - CoCoPure - <a asp-area="" asp-controller="Home" asp-action="Index" style="text-decoration: none; color:black">Trang chủ</a>
         </div>
     </footer>
 
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
+        footer {
+            background: #f8f9fa;
+            text-align: center;
+            width: 100%;
+            height: auto;
         }
-
-        .pt-5 {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        main {
-            flex: 1;
-        }
-
     </style>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -134,6 +123,12 @@
             } else {
                 userMenu.style.display = "none";
                 loginLink.style.display = "block";
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.location.pathname === "/Shopping") {
+                document.querySelector("footer").style.display = "none";
             }
         });
     </script>
