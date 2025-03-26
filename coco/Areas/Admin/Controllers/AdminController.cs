@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -326,6 +326,27 @@ namespace coco.Areas.Admin.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Cập nhật hóa đơn thành công!" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFeedbacks()
+        {
+            var feedbacks = await _context.NonCustomers.OrderByDescending(f => f.DaySend).ToListAsync();
+            return Json(feedbacks);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteFeedback(string userId)
+        {
+            var feedback = await _context.NonCustomers.FindAsync(userId);
+            if (feedback == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy góp ý này!" });
+            }
+
+            _context.NonCustomers.Remove(feedback);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Xóa góp ý thành công!" });
         }
     }
 }

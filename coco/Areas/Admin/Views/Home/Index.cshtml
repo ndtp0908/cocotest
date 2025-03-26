@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Quản lý";
     Layout = "~/Areas/Admin/Views/Shared/AdminLayout.cshtml";
 }
@@ -6,6 +6,7 @@
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
         <strong>Lỗi!</strong> @TempData["ErrorMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -14,22 +15,46 @@
 <div class="mt-4">
     <div class="row">
         <div class="col-md-3 w-auto m-4">
-            <ul class="list-group">            
-                <li class="list-group-item">
-                    <a href="#" class="nav-link" onclick="showTab('billManager')">Quản lý hóa đơn</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="#" class="nav-link" onclick="showTab('productManager')">Quản lý sản phẩm</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="#" class="nav-link" onclick="showTab('userManager')">Quản lý tài khoản</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="#" class="nav-link" onclick="showTab('changePassword')">Đổi mật khẩu</a>
-                </li>
-            </ul>
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-bars me-2"></i> Menu Quản Lý
+                </div>
+                <ul class="list-group list-group-flush">            
+                    <li class="list-group-item">
+                        <a href="#" class="nav-link d-flex align-items-center" onclick="showTab('billManager')">
+                            <i class="fas fa-file-invoice-dollar me-2"></i>
+                            <span>Quản lý hóa đơn</span>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="nav-link d-flex align-items-center" onclick="showTab('productManager')">
+                            <i class="fas fa-box-open me-2"></i>
+                            <span>Quản lý sản phẩm</span>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="nav-link d-flex align-items-center" onclick="showTab('userManager')">
+                            <i class="fas fa-users me-2"></i>
+                            <span>Quản lý tài khoản</span>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="nav-link d-flex align-items-center" onclick="showTab('changePassword')">
+                            <i class="fas fa-key me-2"></i>
+                            <span>Đổi mật khẩu</span>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#" class="nav-link d-flex align-items-center" onclick="showTab('feedbackManager')">
+                            <i class="fas fa-comments me-2"></i>
+                            <span>Quản lý góp ý</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <div class="col-md-10">
+        <div class="col-md-9">
+            <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
             <div id="billManager" class="tab-content">
                 <h2>Quản lý hóa đơn</h2>
                 <button class="btn btn-success mb-3" onclick="showBillForm()">Thêm hóa đơn</button>
@@ -256,9 +281,29 @@
                     <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
                 </form>
             </div>
+
+            <div id="feedbackManager" class="tab-content d-none">
+                <h2>Quản lý góp ý</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped" id="feedbackTable">
+                        <thead>
+                            <tr>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>Số điện thoại</th>
+                                <th>Địa chỉ</th>
+                                <th>Nội dung góp ý</th>
+                                <th>Ngày gửi</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedbackTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 </div>
 
 <script>
@@ -443,7 +488,7 @@
 
     function hideUserForm() {
         document.getElementById("userFormContainer").classList.add("d-none");
-    }
+        }
 
     function deleteUser(id) {
         if (confirm("Bạn có chắc muốn xóa tài khoản này?")) {
@@ -620,8 +665,6 @@
         showBillForm(true);
     }
 
-
-
     function saveBill() {
         let billData = {
             billId: document.getElementById("billId").value.trim(),
@@ -647,6 +690,7 @@
             .then(result => console.log("Kết quả:", result))
             .catch(error => console.error("Lỗi khi gửi request:", error));
     }
+
     function exportExcel() {
         fetch("/Admin/Admin/ExportBills") // Đổi URL theo backend
             .then(response => response.blob()) // Chuyển response thành file blob
@@ -662,3 +706,217 @@
     }
 </script>
 
+<script>
+    function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.add('d-none');
+        });
+        document.getElementById(tabId).classList.remove('d-none');
+
+        if (tabId === "billManager") {
+            loadBills();
+        }
+        if (tabId === "userManager") {
+            loadUsers();
+        }
+        if (tabId === "productManager") {
+            loadProducts();
+        }
+        if (tabId === "feedbackManager") {
+            loadFeedbacks();
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Highlight active menu item
+        const menuItems = document.querySelectorAll('.list-group-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                menuItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Initialize first tab
+        showTab('billManager');
+    });
+
+    function showTab(tabId) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('show');
+            setTimeout(() => {
+                tab.classList.add('d-none');
+            }, 300);
+        });
+
+        // Show selected tab
+        setTimeout(() => {
+            const selectedTab = document.getElementById(tabId);
+            selectedTab.classList.remove('d-none');
+            // Trigger reflow
+            selectedTab.offsetHeight;
+            selectedTab.classList.add('show');
+        }, 300);
+
+        // Load data based on tab
+        if (tabId === "billManager") {
+            loadBills();
+        } else if (tabId === "userManager") {
+            loadUsers();
+        } else if (tabId === "productManager") {
+            loadProducts();
+        } else if (tabId === "feedbackManager") {
+            loadFeedbacks();
+        }
+    }
+</script>
+
+<style>
+    .nav-link {
+        color: #333;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: #0d6efd;
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+
+    .list-group-item {
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        border-left-color: #0d6efd;
+    }
+
+    .list-group-item.active {
+        border-left-color: #0d6efd;
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+
+    .table {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,.05);
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        color: #495057;
+    }
+
+    .btn {
+        border-radius: 5px;
+        padding: 0.375rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0,0,0,.2);
+    }
+
+    .toast {
+        border-radius: 8px;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    }
+
+    .form-control {
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+    }
+
+    .tab-content {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+    }
+
+    .tab-content.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<script>
+    function loadFeedbacks() {
+        fetch('/Admin/Admin/GetFeedbacks')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('feedbackTableBody');
+                tbody.innerHTML = '';
+                
+                data.forEach(feedback => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${feedback.name}</td>
+                        <td>${feedback.email || 'Không có'}</td>
+                        <td>${feedback.phone}</td>
+                        <td>${feedback.address || 'Không có'}</td>
+                        <td>${feedback.note || 'Không có'}</td>
+                        <td>${feedback.daySend}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteFeedback('${feedback.userId}')">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading feedbacks:', error);
+                showToast('Lỗi khi tải danh sách góp ý', 'error');
+            });
+    }
+
+    function deleteFeedback(userId) {
+        if (confirm('Bạn có chắc chắn muốn xóa góp ý này không?')) {
+            fetch('/Admin/Admin/DeleteFeedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `userId=${userId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    setTimeout(() => {
+                        loadFeedbacks(); // Load lại sau 500ms để đảm bảo toast message hiển thị xong
+                    }, 500);
+                } else {
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting feedback:', error);
+                showToast('Lỗi khi xóa góp ý', 'error');
+            });
+        }
+    }
+</script>
