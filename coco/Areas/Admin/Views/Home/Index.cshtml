@@ -11,9 +11,9 @@
     </div>
 }
 
-<div class="container mt-4">
+<div class="mt-4">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 w-auto m-4">
             <ul class="list-group">            
                 <li class="list-group-item">
                     <a href="#" class="nav-link" onclick="showTab('billManager')">Quản lý hóa đơn</a>
@@ -29,7 +29,7 @@
                 </li>
             </ul>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-10">
             <div id="billManager" class="tab-content">
                 <h2>Quản lý hóa đơn</h2>
                 <button class="btn btn-success mb-3" onclick="showBillForm()">Thêm hóa đơn</button>
@@ -38,8 +38,8 @@
                 <table class="table mt-2">
                     <thead>
                         <tr>
-                            <th>Bill ID</th>
-                            <th>User ID</th>
+                            @* <th>Bill ID</th>
+                            <th>User ID</th> *@
                             <th>Tên khách hàng</th>
                             <th>Số điện thoại</th>
                             <th>Giảm giá</th>
@@ -117,7 +117,7 @@
                 <table class="table mt-2">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            @* <th>ID</th> *@
                             <th>Tên sản phẩm</th>
                             <th>Giá</th>
                             <th>Số lượng</th>
@@ -164,7 +164,7 @@
                 <table class="table mt-2">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            @* <th>ID</th> *@
                             <th>Tên</th>
                             <th>Số điện thoại</th>
                             <th>Email</th>
@@ -297,7 +297,7 @@
                 data.forEach(product => {
                     let row = `
                         <tr>
-                            <td>${product.itemId}</td>
+                            
                             <td>${product.itemName}</td>
                             <td>${product.itemPrice.toLocaleString()} VND</td>
                             <td>${product.itemAmount}</td>
@@ -329,7 +329,7 @@
                 data.forEach(user => {
                     let row = `
                             <tr>
-                                <td>${user.userId}</td>
+                                
                                 <td>${user.name}</td>
                                 <td>${user.phone}</td>
                                 <td>${user.email}</td>
@@ -571,8 +571,7 @@
                 data.forEach(bill => {
                     let row = `
             <tr>
-                <td>${bill.billId}</td>
-                <td>${bill.userId}</td>
+                
                 <td>${bill.fullName}</td>
                 <td>${bill.phone}</td>
                 <td>${bill.discount}</td>

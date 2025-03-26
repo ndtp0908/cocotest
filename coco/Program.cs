@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddDbContext<CocopureV1Context>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("cocopureV1")));
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("db_ab33d0_login")));//cocopureV1
 
 builder.Services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(allowedRanges: new[] {UnicodeRanges.All}));
 builder.Services.AddControllers().AddNewtonsoftJson();

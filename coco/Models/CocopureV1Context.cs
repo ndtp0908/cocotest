@@ -31,8 +31,8 @@ public partial class CocopureV1Context : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=fuco;Initial Catalog=cocopureV1;Persist Security Info=True;User ID=sa;Password=fuco;Trust Server Certificate=True");
-
+        => optionsBuilder.UseSqlServer("Data Source=SQL1002.site4now.net;Initial Catalog=db_ab33d0_login;User Id=db_ab33d0_login_admin;Password=ndtp09082003");
+//Data Source=fuco;Initial Catalog=cocopureV1;Persist Security Info=True;User ID=sa;Password=fuco;Trust Server Certificate=True
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Bill>(entity =>
